@@ -137,6 +137,23 @@
   .btn-outline:hover { border-color: var(--line-2); }
   .btn-ghost { background: transparent; color: var(--ink-3); padding: 8px 10px; }
   .btn-ghost:hover { background: var(--line); color: var(--ink-2); }
+  .btn-danger-outline {
+    background: transparent;
+    border: 1.5px solid rgba(223,18,120,0.4);
+    color: #DF1278;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-danger-outline:hover {
+    background: rgba(223,18,120,0.08);
+    border-color: rgba(223,18,120,0.7);
+  }
   .btn-danger { background: var(--del); color: #fff; }
   .btn-danger:hover { background: #b50e63; }
   .btn-success { background: var(--kp-bd); color: #fff; }
@@ -726,6 +743,10 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>
     </svg>
+  </button>
+
+  <button class="btn btn-danger-outline" onclick="confirmReset()" title="Resetear todo y empezar de cero">
+    🔄 Reset
   </button>
 
   <div class="menu-wrap">
