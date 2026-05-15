@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderador · DKC Summit</title>
+<style>
+  :root {
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-bd: #F09595;
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-bd: #97C459;
+    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-bd: #85B7EB;
+    --purple: #534AB7; --purple-bg: #EEEDFE; --purple-bd: #CECBF6;
+    --text: #2C2C2A; --text-2: #5F5E5A; --text-3: #888780;
+    --bg: #F0EEE8; --card: #FFFFFF; --border: rgba(0,0,0,0.09);
+    --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .header { background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 20; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .mod-badge { background: var(--purple); color: #fff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+  .header-title { font-size: 16px; font-weight: 700; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
+  /* ── BUTTONS ── */
+  .btn { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 8px;
+    border: none; cursor: pointer; font-family: var(--font); transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px; }
+  .btn:active { transform: scale(0.97); }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-2); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-danger { background: var(--red-bg); color: var(--red); border: 1.5px solid var(--red-bd); }
+  .btn-danger:hover { background: #F7C1C1; }
+  .btn-success { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-bd); }
+  .btn-purple { background: var(--purple); color: #fff; }
+  .btn-purple:hover { background: #3C3489; }
+  .btn-gray { background: #E8E6E0; color: var(--text-2); }
+
+  /* ── SESSION TOGGLE ── */
+  .session-control { display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; background: var(--card); border-radius: var(--radius);
+    border: 1.5px solid var(--border); }
+  .session-status { display: flex; align-items: center; gap: 6px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.open { background: #97C459; animation: pulse-green 2s infinite; }
+  .status-dot.closed { background: #E24B4A; }
+  @keyframes pulse-green { 0%,100%{opacity:1}50%{opacity:0.4} }
+  .status-label { font-size: 13px; font-weight: 600; }
+  .status-label.open { color: var(--green); }
+  .status-label.closed { color: var(--red); }
+
+  /* ── STATS STRIP ── */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    padding: 16px 20px 0; }
+  .stat-card { background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-value { font-size: 28px; font-weight: 800; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+  /* ── MAIN GRID ── */
+  .main { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .col-wrap { background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden; }
+  .col-head { padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border); }
+  .col-icon { font-size: 18px; }
+  .col-tag { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; }
+  .col-del .col-tag { color: var(--red); }
+  .col-kp  .col-tag { color: var(--green); }
+  .col-cr  .col-tag { color: var(--blue); }
+  .col-n { margin-left: auto; font-size: 12px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px; }
+  .col-del .col-n { background: var(--red-bg); color: var(--red); }
+  .col-kp  .col-n  { background: var(--green-bg); color: var(--green); }
+  .col-cr  .col-n  { background: var(--blue-bg); color: var(--blue); }
+
+  .col-list { max-height: 420px; overflow-y: auto; }
+  .response-item { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .response-item:last-child { border-bottom: none; }
+  .response-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .response-name { font-size: 12px; font-weight: 600; }
+  .col-del .response-name { color: var(--red); }
+  .col-kp  .response-name { color: var(--green); }
+  .col-cr  .response-name { color: var(--blue); }
+  .response-meta { display: flex; align-items: center; gap: 6px; }
+  .response-time { font-size: 11px; color: var(--text-3); }
+  .edit-tag { font-size: 10px; background: #F0EEE8; color: var(--text-3);
+    padding: 1px 6px; border-radius: 20px; }
+  .response-text { font-size: 13px; line-height: 1.5; color: var(--text-2); }
+  .no-response { padding: 24px 16px; text-align: center; font-size: 13px; color: var(--text-3); }
+
+  /* ── PARTICIPANT TABLE ── */
+  .participants-section { padding: 0 20px 20px; }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; margin-top: 16px; }
+  .p-table { background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden; }
+  .p-row { display: grid; grid-template-columns: 200px 1fr 1fr 1fr 80px;
+    gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--border);
+    align-items: center; font-size: 13px; }
+  .p-row:last-child { border-bottom: none; }
+  .p-row.header { background: var(--bg); font-size: 11px; font-weight: 700;
+    color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .p-name { font-weight: 600; color: var(--text); }
+  .p-cell { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .p-cell.empty { color: var(--text-3); font-style: italic; }
+  .p-status { text-align: center; }
+  .badge-sent { background: var(--green-bg); color: var(--green);
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .badge-pending { background: #F0EEE8; color: var(--text-3);
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: #fff; padding: 12px 20px; border-radius: 30px;
+    font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0;
+    transition: all 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* spinner */
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: currentColor; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="mod-badge">MODERADOR</span>
+    <span class="header-title">DELETE / KEEP / CREATE</span>
+  </div>
+  <div class="header-right">
+    <div class="session-control">
+      <div class="session-status">
+        <div class="status-dot open" id="status-dot"></div>
+        <span class="status-label open" id="status-label">Sesión abierta</span>
+      </div>
+      <button class="btn btn-danger" id="btn-toggle-session" onclick="toggleSession()">
+        🔒 Cerrar sesión
+      </button>
+    </div>
+    <button class="btn btn-outline" onclick="loadData()">↻ Actualizar</button>
+    <button class="btn btn-danger" onclick="resetAll()">🗑 Reset</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-label">Participantes</div>
+    <div class="stat-value" id="stat-total">0</div>
+    <div class="stat-sub">de ~20 esperados</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label" style="color:var(--red)">DELETE</div>
+    <div class="stat-value" id="stat-del" style="color:var(--red)">0</div>
+    <div class="stat-sub">respuestas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label" style="color:var(--green)">KEEP</div>
+    <div class="stat-value" id="stat-kp" style="color:var(--green)">0</div>
+    <div class="stat-sub">respuestas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label" style="color:var(--blue)">CREATE</div>
+    <div class="stat-value" id="stat-cr" style="color:var(--blue)">0</div>
+    <div class="stat-sub">respuestas</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="col-wrap col-del">
+    <div class="col-head">
+      <span class="col-icon">🗑️</span>
+      <span class="col-tag">DELETE</span>
+      <span class="col-n" id="n-del">0</span>
+    </div>
+    <div class="col-list" id="list-del"><div class="no-response">Sin respuestas aún</div></div>
+  </div>
+  <div class="col-wrap col-kp">
+    <div class="col-head">
+      <span class="col-icon">💚</span>
+      <span class="col-tag">KEEP</span>
+      <span class="col-n" id="n-kp">0</span>
+    </div>
+    <div class="col-list" id="list-kp"><div class="no-response">Sin respuestas aún</div></div>
+  </div>
+  <div class="col-wrap col-cr">
+    <div class="col-head">
+      <span class="col-icon">💡</span>
+      <span class="col-tag">CREATE</span>
+      <span class="col-n" id="n-cr">0</span>
+    </div>
+    <div class="col-list" id="list-cr"><div class="no-response">Sin respuestas aún</div></div>
+  </div>
+</div>
+
+<div class="participants-section">
+  <div class="section-title">Estado por participante</div>
+  <div class="p-table">
+    <div class="p-row header">
+      <div>Nombre</div><div>DELETE</div><div>KEEP</div><div>CREATE</div><div>Estado</div>
+    </div>
+    <div id="p-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/responses';
+let sessionOpen = true;
+let allResponses = [];
+
+function timeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60) return 'hace ' + diff + 's';
+  if (diff < 3600) return 'hace ' + Math.floor(diff/60) + 'min';
+  return new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+}
+
+async function loadData() {
+  try {
+    const res = await fetch(API + '?t=' + Date.now());
+    const { responses, session } = await res.json();
+    allResponses = responses;
+    sessionOpen = session.open;
+    render();
+  } catch(e) { showToast('❌ Error al cargar datos'); }
+}
+
+function render() {
+  // Session UI
+  const dot = document.getElementById('status-dot');
+  const label = document.getElementById('status-label');
+  const btnToggle = document.getElementById('btn-toggle-session');
+  if (sessionOpen) {
+    dot.className = 'status-dot open';
+    label.textContent = 'Sesión abierta';
+    label.className = 'status-label open';
+    btnToggle.textContent = '🔒 Cerrar sesión';
+    btnToggle.className = 'btn btn-danger';
+  } else {
+    dot.className = 'status-dot closed';
+    label.textContent = 'Sesión cerrada';
+    label.className = 'status-label closed';
+    btnToggle.textContent = '🔓 Reabrir sesión';
+    btnToggle.className = 'btn btn-success';
+  }
+
+  // Stats
+  const withDel = allResponses.filter(r => r.deleteText).length;
+  const withKp  = allResponses.filter(r => r.keepText).length;
+  const withCr  = allResponses.filter(r => r.createText).length;
+  document.getElementById('stat-total').textContent = allResponses.length;
+  document.getElementById('stat-del').textContent = withDel;
+  document.getElementById('stat-kp').textContent = withKp;
+  document.getElementById('stat-cr').textContent = withCr;
+
+  // Columns
+  renderList('list-del', 'n-del', allResponses, 'deleteText');
+  renderList('list-kp',  'n-kp',  allResponses, 'keepText');
+  renderList('list-cr',  'n-cr',  allResponses, 'createText');
+
+  // Participant table
+  const pList = document.getElementById('p-list');
+  if (!allResponses.length) {
+    pList.innerHTML = '<div class="no-response">Sin participantes aún</div>';
+    return;
+  }
+  pList.innerHTML = allResponses.map(r => `
+    <div class="p-row">
+      <div class="p-name">${r.name} ${r.version > 1 ? '<span class="edit-tag">editado</span>' : ''}</div>
+      <div class="p-cell ${r.deleteText ? '' : 'empty'}">${r.deleteText ? truncate(r.deleteText, 40) : '—'}</div>
+      <div class="p-cell ${r.keepText   ? '' : 'empty'}">${r.keepText   ? truncate(r.keepText, 40)   : '—'}</div>
+      <div class="p-cell ${r.createText ? '' : 'empty'}">${r.createText ? truncate(r.createText, 40) : '—'}</div>
+      <div class="p-status">
+        <span class="${r.deleteText||r.keepText||r.createText ? 'badge-sent' : 'badge-pending'}">
+          ${r.deleteText||r.keepText||r.createText ? '✓ Enviado' : 'Pendiente'}
+        </span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderList(listId, countId, responses, field) {
+  const list = document.getElementById(listId);
+  const count = document.getElementById(countId);
+  const items = responses.filter(r => r[field] && r[field].trim());
+  count.textContent = items.length;
+  if (!items.length) {
+    list.innerHTML = '<div class="no-response">Sin respuestas aún</div>';
+    return;
+  }
+  list.innerHTML = items.map(r => `
+    <div class="response-item">
+      <div class="response-header">
+        <span class="response-name">${r.name}</span>
+        <div class="response-meta">
+          <span class="response-time">${timeAgo(r.submittedAt)}</span>
+          ${r.version > 1 ? '<span class="edit-tag">editado</span>' : ''}
+        </div>
+      </div>
+      <div class="response-text">${r[field]}</div>
+    </div>
+  `).join('');
+}
+
+function truncate(str, n) {
+  return str.length > n ? str.slice(0, n) + '…' : str;
+}
+
+async function toggleSession() {
+  const newState = !sessionOpen;
+  const msg = newState ? 'Esto reabrirá la sesión y los participantes podrán volver a enviar.' : 'Esto cerrará la sesión. Los participantes no podrán enviar más respuestas.';
+  if (!confirm(msg)) return;
+  try {
+    await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'session', payload: { open: newState } })
+    });
+    sessionOpen = newState;
+    render();
+    showToast(newState ? '🔓 Sesión reabierta' : '🔒 Sesión cerrada');
+  } catch(e) { showToast('❌ Error'); }
+}
+
+async function resetAll() {
+  if (!confirm('¿Borrar TODAS las respuestas y reiniciar? Esta acción no se puede deshacer.')) return;
+  try {
+    await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reset' })
+    });
+    allResponses = [];
+    sessionOpen = true;
+    render();
+    showToast('🔄 Todo reseteado');
+  } catch(e) { showToast('❌ Error'); }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+loadData();
+setInterval(loadData, 8000);
+</script>
+</body>
+</html>

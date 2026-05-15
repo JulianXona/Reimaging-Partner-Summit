@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DELETE / KEEP / CREATE · Partner Summit</title>
+<style>
+  :root {
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #F09595; --red-dark: #791F1F;
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #97C459; --green-dark: #27500A;
+    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #85B7EB; --blue-dark: #0C447C;
+    --purple: #534AB7; --purple-bg: #EEEDFE; --purple-light: #CECBF6;
+    --text: #2C2C2A; --text-2: #5F5E5A; --text-3: #888780;
+    --bg: #F5F4F0; --card: #FFFFFF; --border: rgba(0,0,0,0.1);
+    --radius: 16px; --radius-sm: 10px;
+    --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); font-family: var(--font); color: var(--text); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── WELCOME SCREEN ── */
+  #s-welcome { justify-content: center; align-items: center; padding: 2rem 1.5rem; gap: 1.5rem; }
+  .logo-mark { width: 64px; height: 64px; background: var(--purple); border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; }
+  .logo-mark span { font-size: 28px; }
+  .welcome-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; text-align: center; }
+  .welcome-sub { font-size: 15px; color: var(--text-2); text-align: center; line-height: 1.5; max-width: 300px; }
+  .name-field { width: 100%; max-width: 340px; }
+  .name-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-2);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .name-field input { width: 100%; padding: 14px 16px; font-size: 17px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--card); color: var(--text); outline: none;
+    transition: border-color 0.2s; font-family: var(--font); }
+  .name-field input:focus { border-color: var(--purple); }
+  .btn-primary { width: 100%; max-width: 340px; padding: 16px; font-size: 17px; font-weight: 700;
+    background: var(--purple); color: #fff; border: none; border-radius: var(--radius-sm);
+    cursor: pointer; transition: background 0.15s, transform 0.1s; font-family: var(--font); }
+  .btn-primary:active { transform: scale(0.97); background: #3C3489; }
+  .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+  /* ── FORM SCREEN ── */
+  #s-form { padding: 0; }
+  .form-header { padding: 1rem 1.25rem 0.75rem; background: var(--card);
+    border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .form-header-top { display: flex; align-items: center; justify-content: space-between; }
+  .greeting { font-size: 15px; font-weight: 600; color: var(--text); }
+  .session-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px;
+    background: #EAF3DE; color: var(--green); font-weight: 600; }
+  .session-badge.closed { background: #FCEBEB; color: var(--red); }
+  .progress-wrap { margin-top: 10px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); margin-bottom: 5px; }
+  .progress-bar { height: 5px; background: #E8E6E0; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--red), var(--green), var(--blue));
+    transition: width 0.4s ease; }
+
+  .cards-scroll { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+
+  /* ── CARD ── */
+  .card { border-radius: var(--radius); overflow: hidden; border: 1.5px solid; transition: box-shadow 0.2s; }
+  .card:focus-within { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .card-del { border-color: var(--red-border); background: var(--red-bg); }
+  .card-kp  { border-color: var(--green-border); background: var(--green-bg); }
+  .card-cr  { border-color: var(--blue-border); background: var(--blue-bg); }
+
+  .card-top { padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 10px; }
+  .card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .card-del .card-icon { background: rgba(163,45,45,0.12); }
+  .card-kp  .card-icon { background: rgba(59,109,17,0.12); }
+  .card-cr  .card-icon { background: rgba(24,95,165,0.12); }
+  .card-label { flex: 1; }
+  .card-tag { font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+  .card-del .card-tag { color: var(--red); }
+  .card-kp  .card-tag { color: var(--green); }
+  .card-cr  .card-tag { color: var(--blue); }
+  .card-question { font-size: 13px; line-height: 1.4; margin-top: 2px; }
+  .card-del .card-question { color: var(--red-dark); opacity: 0.75; }
+  .card-kp  .card-question { color: var(--green-dark); opacity: 0.75; }
+  .card-cr  .card-question { color: var(--blue-dark); opacity: 0.75; }
+
+  .card-textarea { width: 100%; min-height: 100px; padding: 12px 16px 8px;
+    font-size: 15px; font-family: var(--font); line-height: 1.5;
+    background: transparent; border: none; border-top: 1px solid;
+    outline: none; resize: none; color: var(--text); }
+  .card-del .card-textarea { border-top-color: var(--red-border); }
+  .card-kp  .card-textarea { border-top-color: var(--green-border); }
+  .card-cr  .card-textarea { border-top-color: var(--blue-border); }
+  .card-del .card-textarea::placeholder { color: rgba(163,45,45,0.4); }
+  .card-kp  .card-textarea::placeholder { color: rgba(59,109,17,0.4); }
+  .card-cr  .card-textarea::placeholder { color: rgba(24,95,165,0.4); }
+  .card-footer { display: flex; justify-content: flex-end; padding: 4px 16px 10px; }
+  .char-count { font-size: 11px; }
+  .card-del .char-count { color: rgba(163,45,45,0.5); }
+  .card-kp  .char-count { color: rgba(59,109,17,0.5); }
+  .card-cr  .char-count { color: rgba(24,95,165,0.5); }
+
+  /* ── SUBMIT AREA ── */
+  .submit-area { padding: 1rem 1.25rem 2rem; background: var(--bg);
+    position: sticky; bottom: 0; }
+  .submit-area::before { content: ''; position: absolute; top: -20px; left: 0; right: 0;
+    height: 20px; background: linear-gradient(transparent, var(--bg)); pointer-events: none; }
+  .btn-submit { width: 100%; padding: 18px; font-size: 17px; font-weight: 700;
+    background: var(--purple); color: #fff; border: none; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.15s; font-family: var(--font);
+    display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-submit:active { transform: scale(0.98); background: #3C3489; }
+  .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+  .btn-submit .arrow { font-size: 20px; transition: transform 0.2s; }
+  .btn-submit:not(:disabled):hover .arrow { transform: translateX(4px); }
+
+  /* ── SUCCESS / SUBMITTED STATE ── */
+  .submitted-banner { background: var(--green-bg); border: 1.5px solid var(--green-border);
+    border-radius: var(--radius-sm); padding: 14px 16px; display: flex; gap: 12px;
+    align-items: flex-start; margin-bottom: 1rem; }
+  .submitted-banner .check { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .submitted-banner-text h3 { font-size: 15px; font-weight: 700; color: var(--green-dark); }
+  .submitted-banner-text p { font-size: 13px; color: var(--green); margin-top: 2px; line-height: 1.4; }
+  .edit-hint { text-align: center; font-size: 13px; color: var(--text-3); margin-top: 8px; }
+
+  /* ── CLOSED SCREEN ── */
+  #s-closed { justify-content: center; align-items: center; padding: 2rem 1.5rem; gap: 1.5rem; text-align: center; }
+  .closed-icon { font-size: 56px; }
+  .closed-title { font-size: 24px; font-weight: 800; }
+  .closed-sub { font-size: 15px; color: var(--text-2); line-height: 1.6; max-width: 280px; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: #fff; padding: 12px 20px; border-radius: 30px;
+    font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0;
+    transition: all 0.3s; z-index: 999; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── LOADING ── */
+  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div class="screen active" id="s-welcome">
+  <div class="logo-mark"><span>🎯</span></div>
+  <div>
+    <div class="welcome-title">Partner Summit</div>
+    <div class="welcome-title" style="color:var(--purple)">DELETE / KEEP / CREATE</div>
+  </div>
+  <div class="welcome-sub">Tres tarjetas. Tu perspectiva sobre el futuro del summit.</div>
+  <div class="name-field">
+    <label>¿Cómo te llamás?</label>
+    <input type="text" id="name-input" placeholder="Tu nombre..." maxlength="50" autocomplete="off"
+      autocapitalize="words" spellcheck="false" />
+  </div>
+  <button class="btn-primary" id="btn-start" onclick="startSession()" disabled>Empezar →</button>
+</div>
+
+<!-- FORM -->
+<div class="screen" id="s-form">
+  <div class="form-header">
+    <div class="form-header-top">
+      <div class="greeting" id="greeting">Hola!</div>
+      <div class="session-badge" id="session-badge">Sesión abierta</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">Completá tus tarjetas</span>
+        <span id="progress-pct">0 / 3</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="cards-scroll" id="cards-scroll">
+    <!-- Submitted banner (hidden initially) -->
+    <div class="submitted-banner" id="submitted-banner" style="display:none">
+      <div class="check">✅</div>
+      <div class="submitted-banner-text">
+        <h3>¡Tarjetas enviadas!</h3>
+        <p id="submitted-time">Enviado · podés editar hasta que el moderador cierre la sesión</p>
+      </div>
+    </div>
+
+    <!-- DELETE -->
+    <div class="card card-del">
+      <div class="card-top">
+        <div class="card-icon">🗑️</div>
+        <div class="card-label">
+          <div class="card-tag">DELETE</div>
+          <div class="card-question">¿Qué debería desaparecer? ¿Qué hacemos solo por costumbre?</div>
+        </div>
+      </div>
+      <textarea class="card-textarea" id="ta-del" maxlength="400"
+        placeholder="Escribí acá..." rows="4"
+        oninput="onType(this, 'del-count', 400)"></textarea>
+      <div class="card-footer"><span class="char-count" id="del-count">0 / 400</span></div>
+    </div>
+
+    <!-- KEEP -->
+    <div class="card card-kp">
+      <div class="card-top">
+        <div class="card-icon">💚</div>
+        <div class="card-label">
+          <div class="card-tag">KEEP</div>
+          <div class="card-question">¿Qué sigue siendo valioso? ¿Qué no debería perderse?</div>
+        </div>
+      </div>
+      <textarea class="card-textarea" id="ta-kp" maxlength="400"
+        placeholder="Escribí acá..." rows="4"
+        oninput="onType(this, 'kp-count', 400)"></textarea>
+      <div class="card-footer"><span class="char-count" id="kp-count">0 / 400</span></div>
+    </div>
+
+    <!-- CREATE -->
+    <div class="card card-cr">
+      <div class="card-top">
+        <div class="card-icon">💡</div>
+        <div class="card-label">
+          <div class="card-tag">CREATE</div>
+          <div class="card-question">¿Qué nuevas experiencias debería haber en el futuro?</div>
+        </div>
+      </div>
+      <textarea class="card-textarea" id="ta-cr" maxlength="400"
+        placeholder="Escribí acá..." rows="4"
+        oninput="onType(this, 'cr-count', 400)"></textarea>
+      <div class="card-footer"><span class="char-count" id="cr-count">0 / 400</span></div>
+    </div>
+
+    <div class="edit-hint" id="edit-hint" style="display:none">
+      Editá cualquier tarjeta y volvé a enviar para actualizar tu respuesta.
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="btn-submit" id="btn-submit" onclick="submitCards()" disabled>
+      <span id="btn-label">Completá al menos una tarjeta</span>
+      <span class="arrow" id="btn-arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- CLOSED -->
+<div class="screen" id="s-closed">
+  <div class="closed-icon">🔒</div>
+  <div class="closed-title">Sesión cerrada</div>
+  <div class="closed-sub">El moderador cerró la carga de respuestas. ¡Gracias por participar!</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/responses';
+let participantId = null;
+let participantName = '';
+let hasSubmitted = false;
+let sessionOpen = true;
+let pollInterval = null;
+
+// ── INIT ──
+function init() {
+  // Restore from localStorage if available
+  const saved = localStorage.getItem('dkc_participant');
+  if (saved) {
+    const data = JSON.parse(saved);
+    participantId = data.id;
+    participantName = data.name;
+    document.getElementById('name-input').value = participantName;
+    checkAndRestore(data);
+  }
+
+  document.getElementById('name-input').addEventListener('input', function() {
+    document.getElementById('btn-start').disabled = !this.value.trim();
+  });
+}
+
+async function checkAndRestore(data) {
+  // Check if session is open and if they already submitted
+  try {
+    const res = await fetch(API);
+    const { responses, session } = await res.json();
+    sessionOpen = session.open;
+    const existing = responses.find(r => r.participantId === data.id);
+    if (existing) {
+      hasSubmitted = true;
+      document.getElementById('ta-del').value = existing.deleteText || '';
+      document.getElementById('ta-kp').value = existing.keepText || '';
+      document.getElementById('ta-cr').value = existing.createText || '';
+      updateCounts();
+    }
+    if (!sessionOpen) { showScreen('s-closed'); return; }
+    showScreen('s-form');
+    setupForm();
+  } catch(e) {
+    showScreen('s-form');
+    setupForm();
+  }
+}
+
+function startSession() {
+  const name = document.getElementById('name-input').value.trim();
+  if (!name) return;
+  participantName = name;
+  participantId = participantId || 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  localStorage.setItem('dkc_participant', JSON.stringify({ id: participantId, name }));
+  showScreen('s-form');
+  setupForm();
+}
+
+function setupForm() {
+  document.getElementById('greeting').textContent = `Hola, ${participantName.split(' ')[0]} 👋`;
+  updateProgress();
+  updateSubmitBtn();
+  if (hasSubmitted) showSubmittedState();
+  startPolling();
+}
+
+// ── TYPING ──
+function onType(el, countId, max) {
+  document.getElementById(countId).textContent = `${el.value.length} / ${max}`;
+  updateProgress();
+  updateSubmitBtn();
+}
+
+function updateCounts() {
+  ['del','kp','cr'].forEach(k => {
+    const el = document.getElementById(`ta-${k}`);
+    document.getElementById(`${k}-count`).textContent = `${el.value.length} / 400`;
+  });
+  updateProgress();
+  updateSubmitBtn();
+}
+
+function updateProgress() {
+  const vals = ['ta-del','ta-kp','ta-cr'].map(id => document.getElementById(id).value.trim());
+  const filled = vals.filter(Boolean).length;
+  document.getElementById('progress-fill').style.width = `${(filled/3)*100}%`;
+  document.getElementById('progress-pct').textContent = `${filled} / 3`;
+  document.getElementById('progress-text').textContent =
+    filled === 0 ? 'Completá tus tarjetas' :
+    filled === 1 ? '¡Bien! Seguí con las otras' :
+    filled === 2 ? '¡Casi! Una más' :
+    '¡Listo para enviar!';
+}
+
+function updateSubmitBtn() {
+  const hasAny = ['ta-del','ta-kp','ta-cr'].some(id => document.getElementById(id).value.trim());
+  const btn = document.getElementById('btn-submit');
+  const label = document.getElementById('btn-label');
+  if (!sessionOpen) {
+    btn.disabled = true; label.textContent = 'Sesión cerrada'; return;
+  }
+  if (!hasAny) {
+    btn.disabled = true; label.textContent = 'Completá al menos una tarjeta'; return;
+  }
+  btn.disabled = false;
+  label.textContent = hasSubmitted ? 'Actualizar mis tarjetas' : 'Enviar mis tarjetas';
+}
+
+// ── SUBMIT ──
+async function submitCards() {
+  const deleteText = document.getElementById('ta-del').value.trim();
+  const keepText   = document.getElementById('ta-kp').value.trim();
+  const createText = document.getElementById('ta-cr').value.trim();
+  if (!deleteText && !keepText && !createText) return;
+
+  const btn = document.getElementById('btn-submit');
+  const label = document.getElementById('btn-label');
+  btn.disabled = true;
+  label.innerHTML = '<div class="spinner"></div>';
+  document.getElementById('btn-arrow').style.display = 'none';
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'submit',
+        payload: { participantId, name: participantName, deleteText, keepText, createText }
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      hasSubmitted = true;
+      showSubmittedState();
+      showToast(hasSubmitted ? '✅ Tarjetas actualizadas' : '✅ ¡Tarjetas enviadas!');
+    } else {
+      showToast('❌ ' + (data.error || 'Error al enviar'));
+    }
+  } catch(e) {
+    showToast('❌ Error de conexión');
+  }
+
+  btn.disabled = false;
+  document.getElementById('btn-arrow').style.display = '';
+  updateSubmitBtn();
+}
+
+function showSubmittedState() {
+  const banner = document.getElementById('submitted-banner');
+  const hint = document.getElementById('edit-hint');
+  banner.style.display = 'flex';
+  hint.style.display = 'block';
+  document.getElementById('submitted-time').textContent =
+    'Enviado a las ' + new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) +
+    ' · podés editar y reenviar';
+}
+
+// ── POLLING ──
+function startPolling() {
+  pollInterval = setInterval(async () => {
+    try {
+      const res = await fetch(API);
+      const { session } = await res.json();
+      if (!session.open && sessionOpen) {
+        sessionOpen = false;
+        document.getElementById('session-badge').textContent = 'Sesión cerrada';
+        document.getElementById('session-badge').className = 'session-badge closed';
+        updateSubmitBtn();
+        if (!hasSubmitted) showToast('🔒 El moderador cerró la sesión');
+      }
+    } catch(e) {}
+  }, 8000);
+}
+
+// ── UTILS ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+init();
+</script>
+</body>
+</html>

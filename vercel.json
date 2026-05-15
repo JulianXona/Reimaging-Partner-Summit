@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/board", "destination": "/board.html" },
+    { "source": "/moderador", "destination": "/moderador.html" },
+    { "source": "/", "destination": "/index.html" }
+  ]
+}

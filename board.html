@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Board · DELETE / KEEP / CREATE</title>
+<style>
+  :root {
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #F09595;
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #97C459;
+    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #85B7EB;
+    --purple: #534AB7; --purple-bg: #EEEDFE;
+    --text: #2C2C2A; --text-2: #5F5E5A; --text-3: #888780;
+    --bg: #1A1A18; --card-bg: #242422; --border: rgba(255,255,255,0.08);
+    --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); font-family: var(--font);
+    color: #E8E6E0; overflow: hidden; }
+
+  /* ── TOP BAR ── */
+  .topbar { display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; border-bottom: 1px solid var(--border); height: 64px; }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .logo-pill { background: var(--purple); color: #fff; font-size: 13px; font-weight: 800;
+    letter-spacing: 0.5px; padding: 5px 12px; border-radius: 20px; }
+  .topbar-title { font-size: 16px; font-weight: 600; color: #B4B2A9; }
+  .topbar-right { display: flex; align-items: center; gap: 20px; }
+  .stat-pill { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #888780; }
+  .stat-pill strong { font-size: 18px; font-weight: 700; color: #E8E6E0; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #97C459;
+    animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  .clock { font-size: 15px; font-weight: 600; color: #888780; font-variant-numeric: tabular-nums; }
+
+  /* ── COLUMNS ── */
+  .board { display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; padding: 16px 20px; height: calc(100vh - 64px); }
+  .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .col-header { display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; border-radius: 12px; flex-shrink: 0; }
+  .col-del .col-header { background: rgba(163,45,45,0.15); border: 1px solid rgba(240,149,149,0.3); }
+  .col-kp  .col-header { background: rgba(59,109,17,0.15);  border: 1px solid rgba(151,196,89,0.3); }
+  .col-cr  .col-header { background: rgba(24,95,165,0.15);  border: 1px solid rgba(133,183,235,0.3); }
+  .col-icon { font-size: 22px; }
+  .col-tag { font-size: 20px; font-weight: 800; letter-spacing: 0.5px; }
+  .col-del .col-tag { color: #F09595; }
+  .col-kp  .col-tag { color: #97C459; }
+  .col-cr  .col-tag { color: #85B7EB; }
+  .col-count { margin-left: auto; font-size: 13px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px; }
+  .col-del .col-count { background: rgba(163,45,45,0.2); color: #F09595; }
+  .col-kp  .col-count { background: rgba(59,109,17,0.2);  color: #97C459; }
+  .col-cr  .col-count { background: rgba(24,95,165,0.2);  color: #85B7EB; }
+
+  .col-cards { flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+    gap: 8px; padding-right: 4px; scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent; }
+  .col-cards::-webkit-scrollbar { width: 4px; }
+  .col-cards::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  /* ── CARD ITEM ── */
+  .card-item { background: var(--card-bg); border-radius: 12px;
+    padding: 14px 16px; border: 1px solid var(--border);
+    animation: slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card-item.updated { animation: flash-update 0.6s ease; }
+  @keyframes flash-update {
+    0%,100% { border-color: var(--border); }
+    50% { border-color: rgba(255,255,255,0.3); background: #2E2E2C; }
+  }
+  .card-meta { display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; }
+  .card-author { font-size: 13px; font-weight: 600; }
+  .col-del .card-author { color: #F09595; }
+  .col-kp  .card-author { color: #97C459; }
+  .col-cr  .card-author { color: #85B7EB; }
+  .card-time { font-size: 11px; color: #5F5E5A; }
+  .card-ver { font-size: 10px; color: #5F5E5A; margin-left: 4px; }
+  .card-text { font-size: 15px; line-height: 1.55; color: #C2C0B6; word-break: break-word; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px;
+    color: rgba(255,255,255,0.2); text-align: center; padding: 2rem; }
+  .empty-state .empty-icon { font-size: 32px; opacity: 0.4; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── WAITING / CLOSED OVERLAY ── */
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.92);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1rem; z-index: 50; }
+  .overlay h2 { font-size: 32px; font-weight: 800; color: #E8E6E0; }
+  .overlay p { font-size: 18px; color: #888780; }
+  .qr-hint { margin-top: 1rem; font-size: 14px; color: #5F5E5A; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-pill">SAP Partner Summit</div>
+    <div class="topbar-title">DELETE / KEEP / CREATE</div>
+  </div>
+  <div class="topbar-right">
+    <div class="live-dot"></div>
+    <div class="stat-pill"><strong id="stat-total">0</strong> participantes</div>
+    <div class="stat-pill"><strong id="stat-responses">0</strong> respuestas</div>
+    <div class="clock" id="clock">00:00</div>
+  </div>
+</div>
+
+<div class="board">
+  <div class="col col-del">
+    <div class="col-header">
+      <span class="col-icon">🗑️</span>
+      <span class="col-tag">DELETE</span>
+      <span class="col-count" id="cnt-del">0</span>
+    </div>
+    <div class="col-cards" id="cards-del">
+      <div class="empty-state"><div class="empty-icon">🗑️</div><p>Esperando respuestas...</p></div>
+    </div>
+  </div>
+  <div class="col col-kp">
+    <div class="col-header">
+      <span class="col-icon">💚</span>
+      <span class="col-tag">KEEP</span>
+      <span class="col-count" id="cnt-kp">0</span>
+    </div>
+    <div class="col-cards" id="cards-kp">
+      <div class="empty-state"><div class="empty-icon">💚</div><p>Esperando respuestas...</p></div>
+    </div>
+  </div>
+  <div class="col col-cr">
+    <div class="col-header">
+      <span class="col-icon">💡</span>
+      <span class="col-tag">CREATE</span>
+      <span class="col-count" id="cnt-cr">0</span>
+    </div>
+    <div class="col-cards" id="cards-cr">
+      <div class="empty-state"><div class="empty-icon">💡</div><p>Esperando respuestas...</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/responses';
+let knownData = {};
+let sessionOpen = true;
+
+function clock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+setInterval(clock, 1000); clock();
+
+function timeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60) return 'hace ' + diff + 's';
+  if (diff < 3600) return 'hace ' + Math.floor(diff/60) + 'min';
+  return new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+}
+
+function renderCol(colId, cntId, items, field, authorClass) {
+  const col = document.getElementById(colId);
+  const cnt = document.getElementById(cntId);
+  const filtered = items.filter(r => r[field] && r[field].trim());
+  cnt.textContent = filtered.length;
+  if (!filtered.length) {
+    col.innerHTML = `<div class="empty-state"><div class="empty-icon">${
+      field==='deleteText'?'🗑️':field==='keepText'?'💚':'💡'
+    }</div><p>Esperando respuestas...</p></div>`;
+    return;
+  }
+  filtered.forEach(item => {
+    const existingEl = col.querySelector(`[data-id="${item.participantId}"]`);
+    if (existingEl) {
+      const oldText = existingEl.querySelector('.card-text').textContent;
+      if (oldText !== item[field]) {
+        existingEl.querySelector('.card-text').textContent = item[field];
+        existingEl.querySelector('.card-time').textContent = timeAgo(item.submittedAt);
+        const ver = existingEl.querySelector('.card-ver');
+        if (item.version > 1) ver.textContent = `· editado`;
+        existingEl.classList.remove('updated');
+        void existingEl.offsetWidth;
+        existingEl.classList.add('updated');
+      }
+    } else {
+      const el = document.createElement('div');
+      el.className = 'card-item';
+      el.setAttribute('data-id', item.participantId);
+      el.innerHTML = `
+        <div class="card-meta">
+          <span class="card-author">${item.name}</span>
+          <span>
+            <span class="card-time">${timeAgo(item.submittedAt)}</span>
+            <span class="card-ver">${item.version > 1 ? '· editado' : ''}</span>
+          </span>
+        </div>
+        <div class="card-text">${item[field]}</div>
+      `;
+      if (col.querySelector('.empty-state')) col.innerHTML = '';
+      col.appendChild(el);
+    }
+  });
+}
+
+async function poll() {
+  try {
+    const res = await fetch(API + '?t=' + Date.now());
+    const { responses, session } = await res.json();
+    sessionOpen = session.open;
+    const total = responses.length;
+    const withResp = responses.filter(r => r.deleteText || r.keepText || r.createText).length;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-responses').textContent = withResp;
+    renderCol('cards-del', 'cnt-del', responses, 'deleteText');
+    renderCol('cards-kp',  'cnt-kp',  responses, 'keepText');
+    renderCol('cards-cr',  'cnt-cr',  responses, 'createText');
+  } catch(e) {}
+}
+
+poll();
+setInterval(poll, 5000);
+</script>
+</body>
+</html>
