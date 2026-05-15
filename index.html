@@ -2,236 +2,788 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>DELETE / KEEP / CREATE · Partner Summit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1840">
+<title>Reimagining Partner Summit · DELETE / KEEP / CREATE</title>
+<link rel="stylesheet" href="assets/fonts.css">
 <style>
   :root {
-    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #F09595; --red-dark: #791F1F;
-    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #97C459; --green-dark: #27500A;
-    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #85B7EB; --blue-dark: #0C447C;
-    --purple: #534AB7; --purple-bg: #EEEDFE; --purple-light: #CECBF6;
-    --text: #2C2C2A; --text-2: #5F5E5A; --text-3: #888780;
-    --bg: #F5F4F0; --card: #FFFFFF; --border: rgba(0,0,0,0.1);
-    --radius: 16px; --radius-sm: 10px;
-    --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    /* SAP Blue — primary */
+    --blue-2: #D1EFFF;
+    --blue-4: #89D1FF;
+    --blue-6: #1B90FF;
+    --blue-7: #0070F2;
+    --blue-10: #002A86;
+    --blue-11: #00144A;
+
+    /* AI Indigo — accent */
+    --indigo-2: #E2D8FF;
+    --indigo-4: #B894FF;
+    --indigo-6: #7858FF;
+    --indigo-7: #5D36FF;
+    --indigo-10: #1C0C6E;
+    --indigo-11: #0E0637;
+
+    /* Category accents (from SAP Secondary) */
+    --del:    #DF1278;   /* Raspberry 7 */
+    --del-2:  #FFDCE8;   /* Raspberry 2 */
+    --del-bg: #FFF3F8;
+    --del-bd: #FEADC8;
+
+    --kp:     #07838F;   /* Teal 7 */
+    --kp-2:   #C2FCEE;   /* Teal 2 */
+    --kp-bg:  #EFFCFA;
+    --kp-bd:  #04ACA7;
+
+    --cr:     #5D36FF;   /* Indigo 7 */
+    --cr-2:   #E2D8FF;   /* Indigo 2 */
+    --cr-bg:  #F5F1FF;
+    --cr-bd:  #B894FF;
+
+    /* Neutrals */
+    --ink:    #00144A;   /* Blue 11 — primary text */
+    --ink-2:  #2A3F6B;
+    --ink-3:  #6B7A99;
+    --line:   #E4ECF7;
+    --line-2: #D4DEF0;
+    --paper:  #FFFFFF;
+    --canvas: #F4F7FD;
+
+    --r-lg: 22px;
+    --r-md: 14px;
+    --r-sm: 10px;
+
+    --font: '72Brand', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; background: var(--bg); font-family: var(--font); color: var(--text); }
+  html, body {
+    min-height: 100%; min-height: 100dvh;
+    background: var(--canvas);
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "kern";
+  }
+  body {
+    background: var(--canvas);
+    overscroll-behavior-y: contain;
+  }
+  button { font-family: inherit; }
 
   /* ── SCREENS ── */
-  .screen { display: none; min-height: 100vh; }
+  .screen { display: none; min-height: 100vh; min-height: 100dvh; }
   .screen.active { display: flex; flex-direction: column; }
 
-  /* ── WELCOME SCREEN ── */
-  #s-welcome { justify-content: center; align-items: center; padding: 2rem 1.5rem; gap: 1.5rem; }
-  .logo-mark { width: 64px; height: 64px; background: var(--purple); border-radius: 18px;
-    display: flex; align-items: center; justify-content: center; }
-  .logo-mark span { font-size: 28px; }
-  .welcome-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; text-align: center; }
-  .welcome-sub { font-size: 15px; color: var(--text-2); text-align: center; line-height: 1.5; max-width: 300px; }
-  .name-field { width: 100%; max-width: 340px; }
-  .name-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-2);
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-  .name-field input { width: 100%; padding: 14px 16px; font-size: 17px; border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm); background: var(--card); color: var(--text); outline: none;
-    transition: border-color 0.2s; font-family: var(--font); }
-  .name-field input:focus { border-color: var(--purple); }
-  .btn-primary { width: 100%; max-width: 340px; padding: 16px; font-size: 17px; font-weight: 700;
-    background: var(--purple); color: #fff; border: none; border-radius: var(--radius-sm);
-    cursor: pointer; transition: background 0.15s, transform 0.1s; font-family: var(--font); }
-  .btn-primary:active { transform: scale(0.97); background: #3C3489; }
-  .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+  /* ════════════════════════════════════════════════
+     WELCOME — Full-bleed brand piece (table-tent style)
+     ════════════════════════════════════════════════ */
+  #s-welcome {
+    padding: 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 80% 90%, rgba(120, 88, 255, 0.65) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 50% at 20% 80%, rgba(93, 54, 255, 0.55) 0%, transparent 65%),
+      linear-gradient(180deg, #001550 0%, #0E0637 55%, #1C0C6E 100%);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  /* The brand anvil, dominant — bottom half of the screen */
+  .w-anvil {
+    display: none;
+  }
+  .w-anvil-glow {
+    position: absolute;
+    bottom: -20%; right: -10%;
+    width: 110%; height: 70%;
+    background:
+      radial-gradient(ellipse at 70% 70%, rgba(184, 148, 255, 0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 30% 100%, rgba(27, 144, 255, 0.35) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* Top bar: SAP logo right, event marker left */
+  .w-top {
+    position: relative; z-index: 3;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: max(env(safe-area-inset-top), 18px) 22px 0;
+  }
+  .w-top-mark {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase; letter-spacing: 0.22em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .w-top-mark::before {
+    content: ''; width: 18px; height: 1px; background: rgba(255, 255, 255, 0.4);
+  }
+  .w-top img {
+    height: 28px; width: auto;
+    opacity: 0.95;
+    background: #fff;
+    padding: 3px 4px;
+    border-radius: 3px;
+  }
 
-  /* ── FORM SCREEN ── */
-  #s-form { padding: 0; }
-  .form-header { padding: 1rem 1.25rem 0.75rem; background: var(--card);
-    border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-  .form-header-top { display: flex; align-items: center; justify-content: space-between; }
-  .greeting { font-size: 15px; font-weight: 600; color: var(--text); }
-  .session-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px;
-    background: #EAF3DE; color: var(--green); font-weight: 600; }
-  .session-badge.closed { background: #FCEBEB; color: var(--red); }
-  .progress-wrap { margin-top: 10px; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); margin-bottom: 5px; }
-  .progress-bar { height: 5px; background: #E8E6E0; border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 3px;
-    background: linear-gradient(90deg, var(--red), var(--green), var(--blue));
-    transition: width 0.4s ease; }
+  /* Hero text — sits top-left over the gradient */
+  .w-hero {
+    position: relative; z-index: 3;
+    padding: 32px 24px 24px;
+    display: flex; flex-direction: column;
+    gap: 18px;
+  }
+  .w-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .w-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--indigo-4);
+    box-shadow: 0 0 12px rgba(184, 148, 255, 0.8);
+  }
+  .w-title {
+    font-size: clamp(44px, 13vw, 68px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    color: #fff;
+    margin: 0;
+  }
+  .w-title .grad {
+    background: linear-gradient(110deg, #89D1FF 0%, #B894FF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .w-sub {
+    font-size: 16px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 30ch;
+    font-weight: 400;
+  }
 
-  .cards-scroll { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+  /* Card-style form sheet that sits at bottom */
+  .w-sheet {
+    position: relative; z-index: 3;
+    margin-top: auto;
+    padding: 22px 22px max(env(safe-area-inset-bottom), 22px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.08) 100%);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .w-label {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-bottom: 2px;
+  }
+  .w-input {
+    width: 100%;
+    padding: 18px;
+    font-size: 18px; font-weight: 500;
+    font-family: var(--font);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--r-md);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    -webkit-text-fill-color: #fff;
+  }
+  .w-input:focus {
+    border-color: var(--blue-4);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(137, 209, 255, 0.18);
+  }
+  .w-input::placeholder { color: rgba(255, 255, 255, 0.45); font-weight: 400; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 18px;
+    font-size: 17px; font-weight: 700; font-family: var(--font);
+    color: var(--blue-11);
+    background: #fff;
+    border: none; border-radius: var(--r-md);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: transform .12s, box-shadow .15s, opacity .15s, background .15s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    letter-spacing: -0.005em;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:hover:not(:disabled) { background: #F4F7FD; }
+  .btn-primary:disabled {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-primary .arrow {
+    display: inline-block; transition: transform .2s;
+  }
+  .btn-primary:not(:disabled):hover .arrow { transform: translateX(3px); }
+
+  .w-cats {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .w-cat {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 800;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.18em;
+  }
+  .w-cat-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .w-cat.d .w-cat-dot { background: #FA4F96; box-shadow: 0 0 10px rgba(250, 79, 150, 0.7); }
+  .w-cat.k .w-cat-dot { background: #2CE0BF; box-shadow: 0 0 10px rgba(44, 224, 191, 0.7); }
+  .w-cat.c .w-cat-dot { background: #B894FF; box-shadow: 0 0 10px rgba(184, 148, 255, 0.7); }
+
+  /* ════════════════════════════════════════════════
+     FORM
+     ════════════════════════════════════════════════ */
+  #s-form {
+    background:
+      radial-gradient(ellipse 140% 60% at 100% 0%, rgba(226, 216, 255, 0.55) 0%, transparent 55%),
+      radial-gradient(ellipse 120% 50% at 0% 100%, rgba(209, 239, 255, 0.5) 0%, transparent 55%),
+      var(--canvas);
+  }
+  #s-form > * { position: relative; z-index: 1; }
+
+  .form-header {
+    padding: max(env(safe-area-inset-top), 12px) 18px 14px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 10;
+  }
+  /* Brand accent bar */
+  .form-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--del) 0%, var(--del) 33%, var(--kp-bd) 33%, var(--kp-bd) 66%, var(--cr) 66%, var(--cr) 100%);
+    opacity: 0.9;
+  }
+  .form-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .form-greet { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .form-greet .hi {
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .form-greet .name {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 200px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .form-greet .name::after {
+    content: '';
+    width: 22px; height: 22px;
+    background: url('assets/sap-logo.png') no-repeat center/contain;
+    opacity: 0.6;
+    flex-shrink: 0;
+    display: none;
+  }
+  .session-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(4, 172, 167, 0.10); color: var(--kp);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .session-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--kp-bd);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .session-badge.closed {
+    background: rgba(223, 18, 120, 0.10); color: var(--del);
+  }
+  .session-badge.closed::before { background: var(--del); animation: none; }
+
+  .progress-wrap { margin-top: 12px; }
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--ink-3); margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .progress-label .pct { font-weight: 700; color: var(--ink-2); }
+  .progress-bar {
+    height: 6px; background: var(--line);
+    border-radius: 3px; overflow: hidden;
+    display: flex; gap: 2px;
+  }
+  .progress-seg {
+    flex: 1; background: transparent; border-radius: 3px;
+    transition: background .35s ease;
+  }
+  .progress-seg.d.on { background: var(--del); }
+  .progress-seg.k.on { background: var(--kp-bd); }
+  .progress-seg.c.on { background: var(--cr); }
+
+  .cards-scroll {
+    padding: 16px 16px 8px;
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+  }
+
+  /* ── SUBMITTED BANNER ── */
+  .submitted-banner {
+    background: linear-gradient(120deg, rgba(7, 131, 143, 0.06), rgba(4, 172, 167, 0.10));
+    border: 1px solid var(--kp-bd);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+    display: none;
+    gap: 12px;
+    align-items: flex-start;
+    animation: slide-down .35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .submitted-banner.show { display: flex; }
+  @keyframes slide-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .submitted-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border-radius: 50%; background: var(--kp-bd);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .submitted-text h3 {
+    font-size: 15px; font-weight: 700; color: var(--kp);
+    margin-bottom: 2px;
+  }
+  .submitted-text p {
+    font-size: 13px; color: var(--ink-2); line-height: 1.4;
+  }
 
   /* ── CARD ── */
-  .card { border-radius: var(--radius); overflow: hidden; border: 1.5px solid; transition: box-shadow 0.2s; }
-  .card:focus-within { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-  .card-del { border-color: var(--red-border); background: var(--red-bg); }
-  .card-kp  { border-color: var(--green-border); background: var(--green-bg); }
-  .card-cr  { border-color: var(--blue-border); background: var(--blue-bg); }
+  .card {
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    overflow: hidden;
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+    position: relative;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--card-color);
+  }
+  .card.d { --card-color: var(--del);   --card-bg: var(--del-bg);  --card-bd: var(--del-bd); }
+  .card.k { --card-color: var(--kp);    --card-bg: var(--kp-bg);   --card-bd: var(--kp-bd); }
+  .card.c { --card-color: var(--cr);    --card-bg: var(--cr-bg);   --card-bd: var(--cr-bd); }
+  .card:focus-within {
+    border-color: var(--card-color);
+    box-shadow: 0 0 0 4px var(--card-bg), 0 8px 30px rgba(0, 20, 74, 0.06);
+  }
 
-  .card-top { padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 10px; }
-  .card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center;
-    justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .card-del .card-icon { background: rgba(163,45,45,0.12); }
-  .card-kp  .card-icon { background: rgba(59,109,17,0.12); }
-  .card-cr  .card-icon { background: rgba(24,95,165,0.12); }
-  .card-label { flex: 1; }
-  .card-tag { font-size: 13px; font-weight: 800; letter-spacing: 1px; }
-  .card-del .card-tag { color: var(--red); }
-  .card-kp  .card-tag { color: var(--green); }
-  .card-cr  .card-tag { color: var(--blue); }
-  .card-question { font-size: 13px; line-height: 1.4; margin-top: 2px; }
-  .card-del .card-question { color: var(--red-dark); opacity: 0.75; }
-  .card-kp  .card-question { color: var(--green-dark); opacity: 0.75; }
-  .card-cr  .card-question { color: var(--blue-dark); opacity: 0.75; }
+  .card-head {
+    padding: 16px 18px 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .card-num {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card-bg);
+    color: var(--card-color);
+    font-size: 13px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .card-tag {
+    font-size: 14px; font-weight: 900;
+    letter-spacing: 0.16em;
+    color: var(--card-color);
+    flex: 1;
+  }
+  .card-filled-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: transparent;
+    transition: background .2s, transform .2s;
+  }
+  .card.filled .card-filled-dot {
+    background: var(--card-color);
+    transform: scale(1);
+  }
+  .card-q {
+    padding: 0 18px 12px;
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  .card-textarea {
+    width: 100%;
+    min-height: 96px;
+    padding: 12px 18px 8px;
+    font-size: 16px;
+    font-family: var(--font);
+    font-weight: 500;
+    line-height: 1.55;
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--line);
+    outline: none;
+    resize: none;
+    color: var(--ink);
+  }
+  .card-textarea::placeholder {
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px 12px;
+  }
+  .char-count {
+    font-size: 11px; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .card.over-limit .char-count { color: var(--del); }
 
-  .card-textarea { width: 100%; min-height: 100px; padding: 12px 16px 8px;
-    font-size: 15px; font-family: var(--font); line-height: 1.5;
-    background: transparent; border: none; border-top: 1px solid;
-    outline: none; resize: none; color: var(--text); }
-  .card-del .card-textarea { border-top-color: var(--red-border); }
-  .card-kp  .card-textarea { border-top-color: var(--green-border); }
-  .card-cr  .card-textarea { border-top-color: var(--blue-border); }
-  .card-del .card-textarea::placeholder { color: rgba(163,45,45,0.4); }
-  .card-kp  .card-textarea::placeholder { color: rgba(59,109,17,0.4); }
-  .card-cr  .card-textarea::placeholder { color: rgba(24,95,165,0.4); }
-  .card-footer { display: flex; justify-content: flex-end; padding: 4px 16px 10px; }
-  .char-count { font-size: 11px; }
-  .card-del .char-count { color: rgba(163,45,45,0.5); }
-  .card-kp  .char-count { color: rgba(59,109,17,0.5); }
-  .card-cr  .char-count { color: rgba(24,95,165,0.5); }
+  .save-state {
+    font-size: 11px; color: var(--ink-3);
+    font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .save-state.show { opacity: 1; }
+  .save-state .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-3);
+  }
+  .save-state.saved .dot { background: var(--kp-bd); }
 
   /* ── SUBMIT AREA ── */
-  .submit-area { padding: 1rem 1.25rem 2rem; background: var(--bg);
-    position: sticky; bottom: 0; }
-  .submit-area::before { content: ''; position: absolute; top: -20px; left: 0; right: 0;
-    height: 20px; background: linear-gradient(transparent, var(--bg)); pointer-events: none; }
-  .btn-submit { width: 100%; padding: 18px; font-size: 17px; font-weight: 700;
-    background: var(--purple); color: #fff; border: none; border-radius: var(--radius-sm);
-    cursor: pointer; transition: all 0.15s; font-family: var(--font);
-    display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .btn-submit:active { transform: scale(0.98); background: #3C3489; }
-  .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-  .btn-submit .arrow { font-size: 20px; transition: transform 0.2s; }
-  .btn-submit:not(:disabled):hover .arrow { transform: translateX(4px); }
+  .submit-area {
+    padding: 12px 16px max(env(safe-area-inset-bottom), 16px);
+    position: sticky; bottom: 0;
+    background: linear-gradient(to top, rgba(244, 247, 253, 0.95) 60%, rgba(244, 247, 253, 0));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .btn-submit {
+    width: 100%;
+    padding: 18px;
+    font-size: 17px; font-weight: 700;
+    font-family: var(--font);
+    color: #fff;
+    background: linear-gradient(110deg, var(--blue-7) 0%, var(--indigo-7) 100%);
+    border: none; border-radius: var(--r-md);
+    cursor: pointer;
+    transition: transform .12s, box-shadow .15s, opacity .15s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 8px 24px rgba(93, 54, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    letter-spacing: -0.005em;
+  }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled {
+    background: var(--line-2);
+    color: var(--ink-3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .btn-submit .arrow { transition: transform .2s; display: inline-block; }
+  .btn-submit:not(:disabled):hover .arrow { transform: translateX(3px); }
+  .edit-hint {
+    text-align: center; font-size: 12px;
+    color: var(--ink-3); margin-top: 10px;
+    line-height: 1.4;
+    display: none;
+  }
+  .edit-hint.show { display: block; }
 
-  /* ── SUCCESS / SUBMITTED STATE ── */
-  .submitted-banner { background: var(--green-bg); border: 1.5px solid var(--green-border);
-    border-radius: var(--radius-sm); padding: 14px 16px; display: flex; gap: 12px;
-    align-items: flex-start; margin-bottom: 1rem; }
-  .submitted-banner .check { font-size: 22px; line-height: 1; flex-shrink: 0; }
-  .submitted-banner-text h3 { font-size: 15px; font-weight: 700; color: var(--green-dark); }
-  .submitted-banner-text p { font-size: 13px; color: var(--green); margin-top: 2px; line-height: 1.4; }
-  .edit-hint { text-align: center; font-size: 13px; color: var(--text-3); margin-top: 8px; }
+  /* ════════════════════════════════════════════════
+     CLOSED
+     ════════════════════════════════════════════════ */
+  #s-closed {
+    padding: 2rem 1.5rem;
+    justify-content: center; align-items: center;
+    text-align: center; gap: 1rem;
+  }
+  .closed-mark {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--indigo-2), var(--blue-2));
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .closed-mark::before {
+    content: ''; position: absolute; inset: 8px;
+    border-radius: 50%; border: 2px solid var(--indigo-7); opacity: 0.4;
+  }
+  .closed-mark svg { width: 36px; height: 36px; }
+  .closed-title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .closed-sub {
+    font-size: 16px; color: var(--ink-2); line-height: 1.5;
+    max-width: 30ch;
+  }
+  .closed-thanks {
+    margin-top: 2rem;
+    font-size: 13px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .closed-thanks img { height: 16px; opacity: 0.6; }
 
-  /* ── CLOSED SCREEN ── */
-  #s-closed { justify-content: center; align-items: center; padding: 2rem 1.5rem; gap: 1.5rem; text-align: center; }
-  .closed-icon { font-size: 56px; }
-  .closed-title { font-size: 24px; font-weight: 800; }
-  .closed-sub { font-size: 15px; color: var(--text-2); line-height: 1.6; max-width: 280px; }
+  /* ── SUCCESS OVERLAY ── */
+  .success-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 50%, rgba(120, 88, 255, 0.4) 0%, transparent 70%),
+      rgba(14, 6, 55, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: overlay-in .3s ease;
+  }
+  .success-overlay.show { display: flex; }
+  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+  .success-card {
+    text-align: center;
+    color: #fff;
+    max-width: 320px;
+    animation: card-pop .55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes card-pop {
+    from { opacity: 0; transform: translateY(20px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .success-rings {
+    position: relative;
+    width: 120px; height: 120px;
+    margin: 0 auto 1.5rem;
+  }
+  .success-rings .ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(184, 148, 255, 0.5);
+  }
+  .success-rings .r1 { animation: ring-expand 2s ease-out infinite; }
+  .success-rings .r2 { animation: ring-expand 2s ease-out 0.6s infinite; }
+  .success-rings .r3 { animation: ring-expand 2s ease-out 1.2s infinite; }
+  @keyframes ring-expand {
+    0% { transform: scale(0.6); opacity: 0.8; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+  .success-mark {
+    position: absolute; inset: 0;
+    margin: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-6), var(--indigo-7));
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 12px 40px rgba(93, 54, 255, 0.5);
+    animation: mark-in .6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: .15s;
+  }
+  .success-mark svg { width: 44px; height: 44px; }
+  @keyframes mark-in {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+  .success-title {
+    font-size: 32px; font-weight: 900;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .success-sub {
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.75rem;
+  }
+  .success-btn {
+    padding: 14px 28px;
+    font-size: 14px; font-weight: 700;
+    font-family: var(--font);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, transform .12s;
+  }
+  .success-btn:hover { background: rgba(255, 255, 255, 0.16); }
+  .success-btn:active { transform: scale(0.97); }
 
   /* ── TOAST ── */
-  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--text); color: #fff; padding: 12px 20px; border-radius: 30px;
-    font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0;
-    transition: all 0.3s; z-index: 999; pointer-events: none; }
+  .toast {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 84px);
+    left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: #fff;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    opacity: 0;
+    transition: all .3s cubic-bezier(0.34, 1.4, 0.64, 1);
+    z-index: 999; pointer-events: none;
+    box-shadow: 0 10px 40px rgba(0, 20, 74, 0.3);
+    max-width: 90vw;
+    text-align: center;
+  }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ── LOADING ── */
-  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+  /* ── SPINNER ── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%; animation: spin .6s linear infinite;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── LARGER VIEWPORTS — give it more breathing room ── */
+  @media (min-width: 640px) {
+    #s-form, #s-closed {
+      max-width: 540px; margin: 0 auto; width: 100%;
+    }
+    #s-welcome {
+      max-width: 540px; margin: 0 auto; width: 100%;
+    }
+  }
 </style>
 </head>
 <body>
 
 <!-- WELCOME -->
 <div class="screen active" id="s-welcome">
-  <div class="logo-mark"><span>🎯</span></div>
-  <div>
-    <div class="welcome-title">Partner Summit</div>
-    <div class="welcome-title" style="color:var(--purple)">DELETE / KEEP / CREATE</div>
+  <div class="w-anvil-glow"></div>
+
+  <div class="w-top">
+    <span class="w-top-mark">Partner Summit</span>
+    <img src="assets/sap-logo.png" alt="SAP">
   </div>
-  <div class="welcome-sub">Tres tarjetas. Tu perspectiva sobre el futuro del summit.</div>
-  <div class="name-field">
-    <label>¿Cómo te llamás?</label>
-    <input type="text" id="name-input" placeholder="Tu nombre..." maxlength="50" autocomplete="off"
-      autocapitalize="words" spellcheck="false" />
+
+  <div class="w-hero">
+    <span class="w-eyebrow">Reimagining · 3 tarjetas</span>
+    <h1 class="w-title">Delete.<br>Keep.<br><span class="grad">Create.</span></h1>
+    <p class="w-sub">Tu mirada sobre el próximo Summit. Tres preguntas, dos minutos.</p>
   </div>
-  <button class="btn-primary" id="btn-start" onclick="startSession()" disabled>Empezar →</button>
+
+  <form class="w-sheet" onsubmit="event.preventDefault(); startSession();">
+    <label class="w-label" for="name-input">Tu nombre</label>
+    <input class="w-input" id="name-input" type="text"
+           placeholder="Cómo te llamás" maxlength="60"
+           autocomplete="off" autocapitalize="words" spellcheck="false">
+    <button class="btn-primary" id="btn-start" disabled>
+      <span>Empezar</span>
+      <span class="arrow">→</span>
+    </button>
+    <div class="w-cats">
+      <span class="w-cat d"><span class="w-cat-dot"></span>DELETE</span>
+      <span class="w-cat k"><span class="w-cat-dot"></span>KEEP</span>
+      <span class="w-cat c"><span class="w-cat-dot"></span>CREATE</span>
+    </div>
+  </form>
 </div>
 
-<!-- FORM -->
+<!-- ════════════════════════════════════════════════
+     FORM
+     ════════════════════════════════════════════════ -->
 <div class="screen" id="s-form">
   <div class="form-header">
     <div class="form-header-top">
-      <div class="greeting" id="greeting">Hola!</div>
+      <div class="form-greet">
+        <span class="hi">Hola</span>
+        <span class="name" id="greeting">—</span>
+      </div>
       <div class="session-badge" id="session-badge">Sesión abierta</div>
     </div>
     <div class="progress-wrap">
       <div class="progress-label">
         <span id="progress-text">Completá tus tarjetas</span>
-        <span id="progress-pct">0 / 3</span>
+        <span class="pct" id="progress-pct">0 / 3</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-bar">
+        <div class="progress-seg d" id="seg-d"></div>
+        <div class="progress-seg k" id="seg-k"></div>
+        <div class="progress-seg c" id="seg-c"></div>
+      </div>
     </div>
   </div>
 
-  <div class="cards-scroll" id="cards-scroll">
-    <!-- Submitted banner (hidden initially) -->
-    <div class="submitted-banner" id="submitted-banner" style="display:none">
-      <div class="check">✅</div>
-      <div class="submitted-banner-text">
-        <h3>¡Tarjetas enviadas!</h3>
-        <p id="submitted-time">Enviado · podés editar hasta que el moderador cierre la sesión</p>
+  <div class="cards-scroll">
+    <div class="submitted-banner" id="submitted-banner">
+      <div class="submitted-icon">✓</div>
+      <div class="submitted-text">
+        <h3>Tarjetas enviadas</h3>
+        <p id="submitted-time">Podés editar y reenviar hasta que cierre la sesión.</p>
       </div>
     </div>
 
     <!-- DELETE -->
-    <div class="card card-del">
-      <div class="card-top">
-        <div class="card-icon">🗑️</div>
-        <div class="card-label">
-          <div class="card-tag">DELETE</div>
-          <div class="card-question">¿Qué debería desaparecer? ¿Qué hacemos solo por costumbre?</div>
-        </div>
+    <div class="card d" id="card-del">
+      <div class="card-head">
+        <div class="card-num">01</div>
+        <div class="card-tag">DELETE</div>
+        <div class="card-filled-dot"></div>
       </div>
-      <textarea class="card-textarea" id="ta-del" maxlength="400"
-        placeholder="Escribí acá..." rows="4"
-        oninput="onType(this, 'del-count', 400)"></textarea>
-      <div class="card-footer"><span class="char-count" id="del-count">0 / 400</span></div>
+      <p class="card-q">¿Qué debería desaparecer? ¿Qué hacemos solo por costumbre?</p>
+      <textarea class="card-textarea" id="ta-del" maxlength="400" rows="3"
+                placeholder="Escribí lo que sacarías…"
+                oninput="onType('del', this)"></textarea>
+      <div class="card-footer">
+        <span class="save-state" id="save-del"><span class="dot"></span><span>Guardado</span></span>
+        <span class="char-count" id="del-count">0 / 400</span>
+      </div>
     </div>
 
     <!-- KEEP -->
-    <div class="card card-kp">
-      <div class="card-top">
-        <div class="card-icon">💚</div>
-        <div class="card-label">
-          <div class="card-tag">KEEP</div>
-          <div class="card-question">¿Qué sigue siendo valioso? ¿Qué no debería perderse?</div>
-        </div>
+    <div class="card k" id="card-kp">
+      <div class="card-head">
+        <div class="card-num">02</div>
+        <div class="card-tag">KEEP</div>
+        <div class="card-filled-dot"></div>
       </div>
-      <textarea class="card-textarea" id="ta-kp" maxlength="400"
-        placeholder="Escribí acá..." rows="4"
-        oninput="onType(this, 'kp-count', 400)"></textarea>
-      <div class="card-footer"><span class="char-count" id="kp-count">0 / 400</span></div>
+      <p class="card-q">¿Qué sigue siendo valioso? ¿Qué no debería perderse?</p>
+      <textarea class="card-textarea" id="ta-kp" maxlength="400" rows="3"
+                placeholder="Escribí lo que mantendrías…"
+                oninput="onType('kp', this)"></textarea>
+      <div class="card-footer">
+        <span class="save-state" id="save-kp"><span class="dot"></span><span>Guardado</span></span>
+        <span class="char-count" id="kp-count">0 / 400</span>
+      </div>
     </div>
 
     <!-- CREATE -->
-    <div class="card card-cr">
-      <div class="card-top">
-        <div class="card-icon">💡</div>
-        <div class="card-label">
-          <div class="card-tag">CREATE</div>
-          <div class="card-question">¿Qué nuevas experiencias debería haber en el futuro?</div>
-        </div>
+    <div class="card c" id="card-cr">
+      <div class="card-head">
+        <div class="card-num">03</div>
+        <div class="card-tag">CREATE</div>
+        <div class="card-filled-dot"></div>
       </div>
-      <textarea class="card-textarea" id="ta-cr" maxlength="400"
-        placeholder="Escribí acá..." rows="4"
-        oninput="onType(this, 'cr-count', 400)"></textarea>
-      <div class="card-footer"><span class="char-count" id="cr-count">0 / 400</span></div>
-    </div>
-
-    <div class="edit-hint" id="edit-hint" style="display:none">
-      Editá cualquier tarjeta y volvé a enviar para actualizar tu respuesta.
+      <p class="card-q">¿Qué nueva experiencia te gustaría inventar para el próximo Summit?</p>
+      <textarea class="card-textarea" id="ta-cr" maxlength="400" rows="3"
+                placeholder="Escribí lo que crearías…"
+                oninput="onType('cr', this)"></textarea>
+      <div class="card-footer">
+        <span class="save-state" id="save-cr"><span class="dot"></span><span>Guardado</span></span>
+        <span class="char-count" id="cr-count">0 / 400</span>
+      </div>
     </div>
   </div>
 
@@ -240,14 +792,49 @@
       <span id="btn-label">Completá al menos una tarjeta</span>
       <span class="arrow" id="btn-arrow">→</span>
     </button>
+    <p class="edit-hint" id="edit-hint">
+      Editá cualquier tarjeta y volvé a tocar enviar para actualizar tu respuesta.
+    </p>
   </div>
 </div>
 
-<!-- CLOSED -->
+<!-- ════════════════════════════════════════════════
+     SUCCESS OVERLAY (first submit)
+     ════════════════════════════════════════════════ -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-card">
+    <div class="success-rings">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="success-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+    </div>
+    <div class="success-title">¡Gracias!</div>
+    <div class="success-sub">Tus tarjetas ya están en pantalla.<br>Podés editarlas hasta que cierre la sesión.</div>
+    <button class="success-btn" onclick="closeSuccess()">Seguir editando</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     CLOSED
+     ════════════════════════════════════════════════ -->
 <div class="screen" id="s-closed">
-  <div class="closed-icon">🔒</div>
+  <div class="closed-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#5D36FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="11" width="16" height="10" rx="2"/>
+      <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+    </svg>
+  </div>
   <div class="closed-title">Sesión cerrada</div>
-  <div class="closed-sub">El moderador cerró la carga de respuestas. ¡Gracias por participar!</div>
+  <div class="closed-sub">El moderador cerró la carga. Gracias por sumar tu perspectiva.</div>
+  <div class="closed-thanks">
+    <img src="assets/sap-logo.png" alt="SAP">
+    <span>Reimagining Partner Summit</span>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -255,31 +842,39 @@
 
 <script>
 const API = '/api/responses';
+const FIELDS = { del: 'deleteText', kp: 'keepText', cr: 'createText' };
+
 let participantId = null;
 let participantName = '';
 let hasSubmitted = false;
 let sessionOpen = true;
 let pollInterval = null;
+let saveTimers = {};
 
 // ── INIT ──
 function init() {
-  // Restore from localStorage if available
   const saved = localStorage.getItem('dkc_participant');
   if (saved) {
-    const data = JSON.parse(saved);
-    participantId = data.id;
-    participantName = data.name;
-    document.getElementById('name-input').value = participantName;
-    checkAndRestore(data);
+    try {
+      const data = JSON.parse(saved);
+      participantId = data.id;
+      participantName = data.name;
+      document.getElementById('name-input').value = participantName;
+      // restore draft text
+      ['del','kp','cr'].forEach(k => {
+        const draft = localStorage.getItem('dkc_draft_' + k);
+        if (draft) document.getElementById('ta-' + k).value = draft;
+      });
+      checkAndRestore(data);
+      return;
+    } catch (e) {}
   }
-
   document.getElementById('name-input').addEventListener('input', function() {
     document.getElementById('btn-start').disabled = !this.value.trim();
   });
 }
 
 async function checkAndRestore(data) {
-  // Check if session is open and if they already submitted
   try {
     const res = await fetch(API);
     const { responses, session } = await res.json();
@@ -287,15 +882,17 @@ async function checkAndRestore(data) {
     const existing = responses.find(r => r.participantId === data.id);
     if (existing) {
       hasSubmitted = true;
-      document.getElementById('ta-del').value = existing.deleteText || '';
-      document.getElementById('ta-kp').value = existing.keepText || '';
-      document.getElementById('ta-cr').value = existing.createText || '';
-      updateCounts();
+      // server values trump local drafts
+      if (existing.deleteText) document.getElementById('ta-del').value = existing.deleteText;
+      if (existing.keepText)   document.getElementById('ta-kp').value = existing.keepText;
+      if (existing.createText) document.getElementById('ta-cr').value = existing.createText;
     }
+    updateAllUI();
     if (!sessionOpen) { showScreen('s-closed'); return; }
     showScreen('s-form');
     setupForm();
-  } catch(e) {
+  } catch (e) {
+    updateAllUI();
     showScreen('s-form');
     setupForm();
   }
@@ -305,50 +902,73 @@ function startSession() {
   const name = document.getElementById('name-input').value.trim();
   if (!name) return;
   participantName = name;
-  participantId = participantId || 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  participantId = participantId || 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
   localStorage.setItem('dkc_participant', JSON.stringify({ id: participantId, name }));
   showScreen('s-form');
   setupForm();
 }
 
 function setupForm() {
-  document.getElementById('greeting').textContent = `Hola, ${participantName.split(' ')[0]} 👋`;
-  updateProgress();
-  updateSubmitBtn();
-  if (hasSubmitted) showSubmittedState();
+  const first = participantName.split(' ')[0];
+  document.getElementById('greeting').textContent = first;
+  updateAllUI();
+  if (hasSubmitted) showSubmittedState(false);
   startPolling();
 }
 
 // ── TYPING ──
-function onType(el, countId, max) {
-  document.getElementById(countId).textContent = `${el.value.length} / ${max}`;
+function onType(key, el) {
+  const len = el.value.length;
+  document.getElementById(key + '-count').textContent = `${len} / 400`;
+  const card = el.closest('.card');
+  card.classList.toggle('filled', !!el.value.trim());
+  card.classList.toggle('over-limit', len >= 400);
+
+  // Save draft locally (debounced + indicator)
+  const saveEl = document.getElementById('save-' + key);
+  saveEl.classList.add('show');
+  saveEl.classList.remove('saved');
+  saveEl.querySelector('span:last-child').textContent = 'Guardando…';
+
+  clearTimeout(saveTimers[key]);
+  saveTimers[key] = setTimeout(() => {
+    localStorage.setItem('dkc_draft_' + key, el.value);
+    saveEl.classList.add('saved');
+    saveEl.querySelector('span:last-child').textContent = 'Borrador guardado';
+    setTimeout(() => saveEl.classList.remove('show'), 1400);
+  }, 500);
+
   updateProgress();
   updateSubmitBtn();
 }
 
-function updateCounts() {
+function updateAllUI() {
   ['del','kp','cr'].forEach(k => {
-    const el = document.getElementById(`ta-${k}`);
-    document.getElementById(`${k}-count`).textContent = `${el.value.length} / 400`;
+    const el = document.getElementById('ta-' + k);
+    document.getElementById(k + '-count').textContent = `${el.value.length} / 400`;
+    const card = el.closest('.card');
+    card.classList.toggle('filled', !!el.value.trim());
   });
   updateProgress();
   updateSubmitBtn();
 }
 
 function updateProgress() {
-  const vals = ['ta-del','ta-kp','ta-cr'].map(id => document.getElementById(id).value.trim());
+  const vals = ['del','kp','cr'].map(k => document.getElementById('ta-' + k).value.trim());
   const filled = vals.filter(Boolean).length;
-  document.getElementById('progress-fill').style.width = `${(filled/3)*100}%`;
+  document.getElementById('seg-d').classList.toggle('on', !!vals[0]);
+  document.getElementById('seg-k').classList.toggle('on', !!vals[1]);
+  document.getElementById('seg-c').classList.toggle('on', !!vals[2]);
   document.getElementById('progress-pct').textContent = `${filled} / 3`;
   document.getElementById('progress-text').textContent =
     filled === 0 ? 'Completá tus tarjetas' :
-    filled === 1 ? '¡Bien! Seguí con las otras' :
-    filled === 2 ? '¡Casi! Una más' :
+    filled === 1 ? 'Bien — seguí con las otras' :
+    filled === 2 ? 'Casi — una más' :
     '¡Listo para enviar!';
 }
 
 function updateSubmitBtn() {
-  const hasAny = ['ta-del','ta-kp','ta-cr'].some(id => document.getElementById(id).value.trim());
+  const hasAny = ['del','kp','cr'].some(k => document.getElementById('ta-' + k).value.trim());
   const btn = document.getElementById('btn-submit');
   const label = document.getElementById('btn-label');
   if (!sessionOpen) {
@@ -371,7 +991,11 @@ async function submitCards() {
   const btn = document.getElementById('btn-submit');
   const label = document.getElementById('btn-label');
   btn.disabled = true;
-  label.innerHTML = '<div class="spinner"></div>';
+  const prevHtml = label.innerHTML;
+  label.innerHTML = '';
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner';
+  label.appendChild(spinner);
   document.getElementById('btn-arrow').style.display = 'none';
 
   try {
@@ -385,45 +1009,61 @@ async function submitCards() {
     });
     const data = await res.json();
     if (data.ok) {
+      const wasFirst = !hasSubmitted;
       hasSubmitted = true;
-      showSubmittedState();
-      showToast(hasSubmitted ? '✅ Tarjetas actualizadas' : '✅ ¡Tarjetas enviadas!');
+      showSubmittedState(true);
+      if (wasFirst) {
+        showSuccess();
+      } else {
+        showToast('✓ Tarjetas actualizadas');
+      }
+      // Clear local drafts now that they're on server
+      ['del','kp','cr'].forEach(k => localStorage.removeItem('dkc_draft_' + k));
     } else {
-      showToast('❌ ' + (data.error || 'Error al enviar'));
+      showToast('No se pudo enviar — ' + (data.error || 'reintentá'));
     }
-  } catch(e) {
-    showToast('❌ Error de conexión');
+  } catch (e) {
+    showToast('Error de conexión — reintentá');
   }
 
-  btn.disabled = false;
   document.getElementById('btn-arrow').style.display = '';
+  label.innerHTML = prevHtml;
   updateSubmitBtn();
 }
 
-function showSubmittedState() {
+function showSubmittedState(animated) {
   const banner = document.getElementById('submitted-banner');
   const hint = document.getElementById('edit-hint');
-  banner.style.display = 'flex';
-  hint.style.display = 'block';
+  banner.classList.add('show');
+  hint.classList.add('show');
+  const t = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
   document.getElementById('submitted-time').textContent =
-    'Enviado a las ' + new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) +
-    ' · podés editar y reenviar';
+    'Enviado a las ' + t + ' · podés editar y reenviar.';
 }
 
 // ── POLLING ──
 function startPolling() {
+  if (pollInterval) clearInterval(pollInterval);
   pollInterval = setInterval(async () => {
     try {
       const res = await fetch(API);
       const { session } = await res.json();
-      if (!session.open && sessionOpen) {
-        sessionOpen = false;
+      const wasOpen = sessionOpen;
+      sessionOpen = session.open;
+      if (!sessionOpen && wasOpen) {
         document.getElementById('session-badge').textContent = 'Sesión cerrada';
-        document.getElementById('session-badge').className = 'session-badge closed';
+        document.getElementById('session-badge').classList.add('closed');
         updateSubmitBtn();
-        if (!hasSubmitted) showToast('🔒 El moderador cerró la sesión');
+        if (!hasSubmitted) {
+          showToast('El moderador cerró la sesión');
+          setTimeout(() => showScreen('s-closed'), 1800);
+        }
+      } else if (sessionOpen && !wasOpen) {
+        document.getElementById('session-badge').textContent = 'Sesión abierta';
+        document.getElementById('session-badge').classList.remove('closed');
+        updateSubmitBtn();
       }
-    } catch(e) {}
+    } catch (e) {}
   }, 8000);
 }
 
@@ -437,7 +1077,15 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showSuccess() {
+  document.getElementById('success-overlay').classList.add('show');
+}
+function closeSuccess() {
+  document.getElementById('success-overlay').classList.remove('show');
 }
 
 init();

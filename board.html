@@ -3,210 +3,794 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Board · DELETE / KEEP / CREATE</title>
+<title>Board · Reimagining Partner Summit</title>
+<link rel="stylesheet" href="assets/fonts.css">
 <style>
   :root {
-    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #F09595;
-    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #97C459;
-    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #85B7EB;
-    --purple: #534AB7; --purple-bg: #EEEDFE;
-    --text: #2C2C2A; --text-2: #5F5E5A; --text-3: #888780;
-    --bg: #1A1A18; --card-bg: #242422; --border: rgba(255,255,255,0.08);
-    --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --blue-2: #D1EFFF;
+    --blue-4: #89D1FF;
+    --blue-6: #1B90FF;
+    --blue-7: #0070F2;
+    --blue-10: #002A86;
+    --blue-11: #00144A;
+
+    --indigo-2: #E2D8FF;
+    --indigo-4: #B894FF;
+    --indigo-6: #7858FF;
+    --indigo-7: #5D36FF;
+    --indigo-10: #1C0C6E;
+    --indigo-11: #0E0637;
+
+    /* Category colors tuned for dark BG */
+    --del:    #FA4F96;    /* Raspberry 6 — bright pink */
+    --del-2:  #FFDCE8;
+    --del-glow: rgba(250, 79, 150, 0.35);
+
+    --kp:     #2CE0BF;    /* Teal 4 — bright cyan */
+    --kp-2:   #C2FCEE;
+    --kp-glow: rgba(44, 224, 191, 0.35);
+
+    --cr:     #B894FF;    /* Indigo 4 — bright lavender */
+    --cr-2:   #E2D8FF;
+    --cr-glow: rgba(184, 148, 255, 0.4);
+
+    /* Background */
+    --bg:     #06051A;
+    --bg-2:   #0E0637;
+    --panel:  rgba(255, 255, 255, 0.04);
+    --line:   rgba(255, 255, 255, 0.08);
+    --line-2: rgba(255, 255, 255, 0.14);
+
+    --ink:    #FFFFFF;
+    --ink-2:  #B4B9D6;
+    --ink-3:  #6A7197;
+
+    --font: '72Brand', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: var(--bg); font-family: var(--font);
-    color: #E8E6E0; overflow: hidden; }
+  html, body {
+    height: 100%; overflow: hidden;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "kern";
+  }
+  body {
+    background:
+      radial-gradient(ellipse at 80% 10%, rgba(120, 88, 255, 0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 15% 90%, rgba(0, 112, 242, 0.16) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(14, 6, 55, 0.6) 0%, transparent 70%),
+      linear-gradient(180deg, #06051A 0%, #0E0637 100%);
+    position: relative;
+  }
 
-  /* ── TOP BAR ── */
-  .topbar { display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px; border-bottom: 1px solid var(--border); height: 64px; }
-  .topbar-left { display: flex; align-items: center; gap: 16px; }
-  .logo-pill { background: var(--purple); color: #fff; font-size: 13px; font-weight: 800;
-    letter-spacing: 0.5px; padding: 5px 12px; border-radius: 20px; }
-  .topbar-title { font-size: 16px; font-weight: 600; color: #B4B2A9; }
-  .topbar-right { display: flex; align-items: center; gap: 20px; }
-  .stat-pill { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #888780; }
-  .stat-pill strong { font-size: 18px; font-weight: 700; color: #E8E6E0; }
-  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #97C459;
-    animation: pulse-dot 2s ease-in-out infinite; }
-  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-  .clock { font-size: 15px; font-weight: 600; color: #888780; font-variant-numeric: tabular-nums; }
+  /* Decorative anvils */
+  .bg-anvil-1 {
+    position: fixed; pointer-events: none;
+    top: -8%; right: -10%;
+    width: 38%; max-width: 720px;
+    opacity: 0.25;
+    transform: rotate(-12deg);
+    filter: blur(0.4px) drop-shadow(0 30px 80px rgba(120, 88, 255, 0.3));
+    z-index: 0;
+  }
+  .bg-anvil-2 {
+    position: fixed; pointer-events: none;
+    bottom: -15%; left: -8%;
+    width: 30%; max-width: 560px;
+    opacity: 0.18;
+    transform: rotate(8deg) scaleX(-1);
+    filter: blur(0.4px) drop-shadow(0 30px 80px rgba(0, 112, 242, 0.3));
+    z-index: 0;
+  }
+  /* Grain */
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='1'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+  }
 
-  /* ── COLUMNS ── */
-  .board { display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px; padding: 16px 20px; height: calc(100vh - 64px); }
-  .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-  .col-header { display: flex; align-items: center; gap: 10px;
-    padding: 12px 16px; border-radius: 12px; flex-shrink: 0; }
-  .col-del .col-header { background: rgba(163,45,45,0.15); border: 1px solid rgba(240,149,149,0.3); }
-  .col-kp  .col-header { background: rgba(59,109,17,0.15);  border: 1px solid rgba(151,196,89,0.3); }
-  .col-cr  .col-header { background: rgba(24,95,165,0.15);  border: 1px solid rgba(133,183,235,0.3); }
-  .col-icon { font-size: 22px; }
-  .col-tag { font-size: 20px; font-weight: 800; letter-spacing: 0.5px; }
-  .col-del .col-tag { color: #F09595; }
-  .col-kp  .col-tag { color: #97C459; }
-  .col-cr  .col-tag { color: #85B7EB; }
-  .col-count { margin-left: auto; font-size: 13px; font-weight: 600;
-    padding: 3px 10px; border-radius: 20px; }
-  .col-del .col-count { background: rgba(163,45,45,0.2); color: #F09595; }
-  .col-kp  .col-count { background: rgba(59,109,17,0.2);  color: #97C459; }
-  .col-cr  .col-count { background: rgba(24,95,165,0.2);  color: #85B7EB; }
+  .stage {
+    position: relative; z-index: 2;
+    height: 100vh;
+    display: flex; flex-direction: column;
+    padding: 28px 36px;
+    gap: 22px;
+  }
 
-  .col-cards { flex: 1; overflow-y: auto; display: flex; flex-direction: column;
-    gap: 8px; padding-right: 4px; scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.1) transparent; }
-  .col-cards::-webkit-scrollbar { width: 4px; }
-  .col-cards::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  /* ════════════════════════════════════════════════
+     TOP BAR
+     ════════════════════════════════════════════════ */
+  .topbar {
+    display: flex; align-items: center; gap: 24px;
+    flex-shrink: 0;
+  }
+  .tb-brand { display: flex; align-items: center; gap: 18px; }
+  .tb-brand img { height: 36px; display: block; filter: brightness(1.1); }
+  .tb-sep { width: 1px; height: 32px; background: var(--line-2); }
+  .tb-title {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .tb-eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--indigo-4); text-transform: uppercase;
+  }
+  .tb-name {
+    font-size: 20px; font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .tb-name .grad {
+    background: linear-gradient(110deg, var(--blue-4) 0%, var(--indigo-4) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 
-  /* ── CARD ITEM ── */
-  .card-item { background: var(--card-bg); border-radius: 12px;
-    padding: 14px 16px; border: 1px solid var(--border);
-    animation: slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  @keyframes slide-in {
-    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  .tb-spacer { flex: 1; }
+
+  .tb-stats {
+    display: flex; align-items: center; gap: 36px;
+  }
+  .tb-stat {
+    display: flex; flex-direction: column; gap: 2px;
+    text-align: right;
+  }
+  .tb-stat-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-3);
+  }
+  .tb-stat-value {
+    font-size: 32px; font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    transition: color .4s;
+  }
+  .tb-stat-value.bumped {
+    color: var(--indigo-4);
+    animation: bump .6s ease;
+  }
+  @keyframes bump {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .tb-clock {
+    font-size: 15px; font-weight: 600; color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+    padding: 8px 14px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tb-clock .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--kp);
+    box-shadow: 0 0 12px var(--kp-glow);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1; transform: scale(1)} 50%{opacity:0.45; transform: scale(0.8)} }
+
+  /* ════════════════════════════════════════════════
+     COLUMNS
+     ════════════════════════════════════════════════ */
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 22px;
+    flex: 1;
+    min-height: 0;
+  }
+  .col {
+    display: flex; flex-direction: column;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+  }
+  .col::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--col-c), transparent);
+    opacity: 0.6;
+  }
+  .col.d { --col-c: var(--del);  --col-glow: var(--del-glow); }
+  .col.k { --col-c: var(--kp);   --col-glow: var(--kp-glow); }
+  .col.c { --col-c: var(--cr);   --col-glow: var(--cr-glow); }
+
+  .col-head {
+    padding: 22px 26px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .col-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--col-c);
+    box-shadow: 0 0 24px var(--col-glow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .col-icon-wrap svg { width: 22px; height: 22px; }
+  .col-tag {
+    font-size: 24px; font-weight: 900;
+    letter-spacing: 0.06em;
+    color: var(--col-c);
+    text-shadow: 0 0 24px var(--col-glow);
+    line-height: 1;
+  }
+  .col-sub {
+    font-size: 11px; font-weight: 600;
+    color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-top: 4px;
+  }
+  .col-meta {
+    margin-left: auto;
+    display: flex; flex-direction: column; align-items: flex-end;
+  }
+  .col-count {
+    font-size: 28px; font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .col-count-label {
+    font-size: 10px; font-weight: 700;
+    color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.16em;
+    margin-top: 4px;
+  }
+
+  /* Card list */
+  .col-cards {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px 18px;
+    display: flex; flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scroll-behavior: smooth;
+  }
+  .col-cards::-webkit-scrollbar { width: 6px; }
+  .col-cards::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+
+  .card-item {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    position: relative;
+    animation: card-in .55s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(-14px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
-  .card-item.updated { animation: flash-update 0.6s ease; }
-  @keyframes flash-update {
-    0%,100% { border-color: var(--border); }
-    50% { border-color: rgba(255,255,255,0.3); background: #2E2E2C; }
+  .card-item.updated {
+    animation: card-flash 1s ease;
   }
-  .card-meta { display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 8px; }
-  .card-author { font-size: 13px; font-weight: 600; }
-  .col-del .card-author { color: #F09595; }
-  .col-kp  .card-author { color: #97C459; }
-  .col-cr  .card-author { color: #85B7EB; }
-  .card-time { font-size: 11px; color: #5F5E5A; }
-  .card-ver { font-size: 10px; color: #5F5E5A; margin-left: 4px; }
-  .card-text { font-size: 15px; line-height: 1.55; color: #C2C0B6; word-break: break-word; }
+  @keyframes card-flash {
+    0%   { background: var(--col-c); border-color: var(--col-c); box-shadow: 0 0 30px var(--col-glow); }
+    100% { background: rgba(255, 255, 255, 0.045); }
+  }
+  .card-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 10px;
+  }
+  .card-author {
+    font-size: 14px; font-weight: 700;
+    color: var(--col-c);
+    letter-spacing: -0.005em;
+  }
+  .card-stamp {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .edit-pill {
+    font-size: 9px; font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink-2);
+    padding: 2px 7px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .card-text {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+    word-break: break-word;
+    font-weight: 400;
+  }
 
-  /* ── EMPTY STATE ── */
-  .empty-state { flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 8px;
-    color: rgba(255,255,255,0.2); text-align: center; padding: 2rem; }
-  .empty-state .empty-icon { font-size: 32px; opacity: 0.4; }
-  .empty-state p { font-size: 14px; }
+  /* Empty state */
+  .empty-state {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px; padding: 2rem;
+    text-align: center;
+  }
+  .empty-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--col-c);
+    opacity: 0.6;
+  }
+  .empty-icon svg { width: 26px; height: 26px; }
+  .empty-state p {
+    font-size: 14px; color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
 
-  /* ── WAITING / CLOSED OVERLAY ── */
-  .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.92);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 1rem; z-index: 50; }
-  .overlay h2 { font-size: 32px; font-weight: 800; color: #E8E6E0; }
-  .overlay p { font-size: 18px; color: #888780; }
-  .qr-hint { margin-top: 1rem; font-size: 14px; color: #5F5E5A; }
+  /* ════════════════════════════════════════════════
+     OVERLAYS
+     ════════════════════════════════════════════════ */
+  .overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(6, 5, 26, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px;
+    text-align: center;
+    padding: 2rem;
+  }
+  .overlay.show { display: flex; }
+  .overlay-mark {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(120, 88, 255, 0.2), rgba(0, 112, 242, 0.2));
+    border: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 60px rgba(120, 88, 255, 0.3);
+  }
+  .overlay-title {
+    font-size: 48px; font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .overlay-sub {
+    font-size: 20px; color: var(--ink-2);
+    max-width: 600px;
+    line-height: 1.5;
+  }
+
+  /* ════════════════════════════════════════════════
+     RESPONSIVE — TV typical 1920x1080
+     ════════════════════════════════════════════════ */
+  /* ── WAITING HERO (no responses yet) ── */
+  .waiting {
+    position: fixed; inset: 0; z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 30px;
+    padding: 2rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 50%, rgba(120, 88, 255, 0.22) 0%, transparent 70%),
+      rgba(6, 5, 26, 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .waiting.show { display: flex; }
+  .waiting-eyebrow {
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.4em;
+    color: var(--indigo-4);
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .waiting-eyebrow::before, .waiting-eyebrow::after {
+    content: ''; width: 36px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(184, 148, 255, 0.6));
+  }
+  .waiting-eyebrow::after {
+    background: linear-gradient(90deg, rgba(184, 148, 255, 0.6), transparent);
+  }
+  .waiting-title {
+    font-size: clamp(64px, 8vw, 140px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    color: #fff;
+    text-shadow: 0 4px 60px rgba(120, 88, 255, 0.4);
+  }
+  .waiting-title .grad {
+    background: linear-gradient(110deg, #89D1FF 0%, #B894FF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .waiting-sub {
+    font-size: clamp(18px, 1.5vw, 26px);
+    color: var(--ink-2);
+    max-width: 820px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .waiting-cats {
+    display: flex; gap: 48px;
+    margin-top: 12px;
+  }
+  .waiting-cat {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .waiting-cat-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 0 28px currentColor;
+    animation: cat-pulse 2.4s ease-in-out infinite;
+  }
+  .waiting-cat.d .waiting-cat-dot { background: var(--del);  color: var(--del);  animation-delay: 0s; }
+  .waiting-cat.k .waiting-cat-dot { background: var(--kp);   color: var(--kp);   animation-delay: 0.4s; }
+  .waiting-cat.c .waiting-cat-dot { background: var(--cr);   color: var(--cr);   animation-delay: 0.8s; }
+  @keyframes cat-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+  }
+  .waiting-cat-label {
+    font-size: 14px; font-weight: 800;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .waiting-hint {
+    margin-top: 20px;
+    padding: 14px 26px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-size: 15px; font-weight: 500;
+    color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .waiting-hint .phone-icon {
+    width: 18px; height: 18px;
+    color: var(--indigo-4);
+  }
+
+  @media (min-width: 1600px) {
+    .stage { padding: 36px 48px; gap: 28px; }
+    .tb-name { font-size: 24px; }
+    .tb-stat-value { font-size: 38px; }
+    .col-tag { font-size: 28px; }
+    .col-count { font-size: 32px; }
+    .card-text { font-size: 19px; }
+    .card-author { font-size: 15px; }
+  }
+
+  @media (min-width: 2400px) {
+    .stage { padding: 48px 60px; gap: 32px; }
+    .tb-name { font-size: 28px; }
+    .tb-stat-value { font-size: 44px; }
+    .col-tag { font-size: 32px; }
+    .col-count { font-size: 38px; }
+    .card-text { font-size: 22px; }
+    .card-author { font-size: 17px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-left">
-    <div class="logo-pill">SAP Partner Summit</div>
-    <div class="topbar-title">DELETE / KEEP / CREATE</div>
+<img class="bg-anvil-1" src="assets/anvil-stack.png" alt="" aria-hidden="true">
+<img class="bg-anvil-2" src="assets/anvil-shard.png" alt="" aria-hidden="true">
+
+<div class="stage">
+
+  <!-- ════════════════════════════════════════════════
+       TOP BAR
+       ════════════════════════════════════════════════ -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <img src="assets/sap-logo.png" alt="SAP">
+      <div class="tb-sep"></div>
+      <div class="tb-title">
+        <div class="tb-eyebrow">Reimagining Partner Summit</div>
+        <div class="tb-name">Delete · Keep · <span class="grad">Create</span></div>
+      </div>
+    </div>
+
+    <div class="tb-spacer"></div>
+
+    <div class="tb-stats">
+      <div class="tb-stat">
+        <div class="tb-stat-label">Participantes</div>
+        <div class="tb-stat-value" id="stat-total">0</div>
+      </div>
+      <div class="tb-stat">
+        <div class="tb-stat-label">Respuestas</div>
+        <div class="tb-stat-value" id="stat-responses">0</div>
+      </div>
+    </div>
+
+    <div class="tb-clock">
+      <span class="live-dot"></span>
+      <span id="clock">00:00</span>
+    </div>
   </div>
-  <div class="topbar-right">
-    <div class="live-dot"></div>
-    <div class="stat-pill"><strong id="stat-total">0</strong> participantes</div>
-    <div class="stat-pill"><strong id="stat-responses">0</strong> respuestas</div>
-    <div class="clock" id="clock">00:00</div>
+
+  <!-- ════════════════════════════════════════════════
+       COLUMNS
+       ════════════════════════════════════════════════ -->
+  <div class="board">
+
+    <div class="col d">
+      <div class="col-head">
+        <div class="col-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/>
+          </svg>
+        </div>
+        <div>
+          <div class="col-tag">DELETE</div>
+          <div class="col-sub">Qué dejaríamos de hacer</div>
+        </div>
+        <div class="col-meta">
+          <div class="col-count" id="cnt-del">0</div>
+          <div class="col-count-label">tarjetas</div>
+        </div>
+      </div>
+      <div class="col-cards" id="cards-del">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/>
+            </svg>
+          </div>
+          <p>Esperando respuestas…</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col k">
+      <div class="col-head">
+        <div class="col-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="col-tag">KEEP</div>
+          <div class="col-sub">Qué no debería perderse</div>
+        </div>
+        <div class="col-meta">
+          <div class="col-count" id="cnt-kp">0</div>
+          <div class="col-count-label">tarjetas</div>
+        </div>
+      </div>
+      <div class="col-cards" id="cards-kp">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <p>Esperando respuestas…</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col c">
+      <div class="col-head">
+        <div class="col-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.93 4.93l2.12 2.12"/><path d="M16.95 16.95l2.12 2.12"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.93 19.07l2.12-2.12"/><path d="M16.95 7.05l2.12-2.12"/><circle cx="12" cy="12" r="4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="col-tag">CREATE</div>
+          <div class="col-sub">Qué nos gustaría inventar</div>
+        </div>
+        <div class="col-meta">
+          <div class="col-count" id="cnt-cr">0</div>
+          <div class="col-count-label">tarjetas</div>
+        </div>
+      </div>
+      <div class="col-cards" id="cards-cr">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.93 4.93l2.12 2.12"/><path d="M16.95 16.95l2.12 2.12"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.93 19.07l2.12-2.12"/><path d="M16.95 7.05l2.12-2.12"/><circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <p>Esperando respuestas…</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════
+     CLOSED OVERLAY
+     ════════════════════════════════════════════════ -->
+<!-- Waiting hero (no responses yet) -->
+<div class="waiting" id="waiting">
+  <div class="waiting-eyebrow">Reimagining Partner Summit</div>
+  <div class="waiting-title">Delete · Keep<br><span class="grad">Create.</span></div>
+  <div class="waiting-sub">Tres preguntas para repensar el próximo Summit.<br>Las respuestas aparecen acá en vivo.</div>
+  <div class="waiting-cats">
+    <div class="waiting-cat d">
+      <div class="waiting-cat-dot"></div>
+      <div class="waiting-cat-label">DELETE</div>
+    </div>
+    <div class="waiting-cat k">
+      <div class="waiting-cat-dot"></div>
+      <div class="waiting-cat-label">KEEP</div>
+    </div>
+    <div class="waiting-cat c">
+      <div class="waiting-cat-dot"></div>
+      <div class="waiting-cat-label">CREATE</div>
+    </div>
+  </div>
+  <div class="waiting-hint">
+    <svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>
+    </svg>
+    Sumáte desde tu celular cuando te lo indiquen
   </div>
 </div>
 
-<div class="board">
-  <div class="col col-del">
-    <div class="col-header">
-      <span class="col-icon">🗑️</span>
-      <span class="col-tag">DELETE</span>
-      <span class="col-count" id="cnt-del">0</span>
-    </div>
-    <div class="col-cards" id="cards-del">
-      <div class="empty-state"><div class="empty-icon">🗑️</div><p>Esperando respuestas...</p></div>
-    </div>
+<!-- Closed overlay -->
+<div class="overlay" id="overlay-closed">
+  <div class="overlay-mark">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#B894FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="11" width="16" height="10" rx="2"/>
+      <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+    </svg>
   </div>
-  <div class="col col-kp">
-    <div class="col-header">
-      <span class="col-icon">💚</span>
-      <span class="col-tag">KEEP</span>
-      <span class="col-count" id="cnt-kp">0</span>
-    </div>
-    <div class="col-cards" id="cards-kp">
-      <div class="empty-state"><div class="empty-icon">💚</div><p>Esperando respuestas...</p></div>
-    </div>
-  </div>
-  <div class="col col-cr">
-    <div class="col-header">
-      <span class="col-icon">💡</span>
-      <span class="col-tag">CREATE</span>
-      <span class="col-count" id="cnt-cr">0</span>
-    </div>
-    <div class="col-cards" id="cards-cr">
-      <div class="empty-state"><div class="empty-icon">💡</div><p>Esperando respuestas...</p></div>
-    </div>
-  </div>
+  <div class="overlay-title">Sesión cerrada</div>
+  <div class="overlay-sub">Gracias por sumar tu mirada al próximo Partner Summit.</div>
 </div>
 
 <script>
 const API = '/api/responses';
-let knownData = {};
 let sessionOpen = true;
+let lastTotal = 0, lastResp = 0;
 
 function clock() {
   const now = new Date();
   document.getElementById('clock').textContent =
-    now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 setInterval(clock, 1000); clock();
 
 function timeAgo(iso) {
   const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 10) return 'ahora';
   if (diff < 60) return 'hace ' + diff + 's';
-  if (diff < 3600) return 'hace ' + Math.floor(diff/60) + 'min';
-  return new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+  if (diff < 3600) return 'hace ' + Math.floor(diff / 60) + ' min';
+  return new Date(iso).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 }
 
-function renderCol(colId, cntId, items, field, authorClass) {
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function bumpStat(id, newVal) {
+  const el = document.getElementById(id);
+  const prev = parseInt(el.textContent, 10) || 0;
+  el.textContent = newVal;
+  if (newVal > prev) {
+    el.classList.remove('bumped');
+    void el.offsetWidth;
+    el.classList.add('bumped');
+  }
+}
+
+function renderCol(colId, cntId, items, field) {
   const col = document.getElementById(colId);
   const cnt = document.getElementById(cntId);
-  const filtered = items.filter(r => r[field] && r[field].trim());
+  // Sort newest first
+  const filtered = items
+    .filter(r => r[field] && r[field].trim())
+    .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
   cnt.textContent = filtered.length;
+
   if (!filtered.length) {
-    col.innerHTML = `<div class="empty-state"><div class="empty-icon">${
-      field==='deleteText'?'🗑️':field==='keepText'?'💚':'💡'
-    }</div><p>Esperando respuestas...</p></div>`;
+    const labelMap = { deleteText: 'DELETE', keepText: 'KEEP', createText: 'CREATE' };
+    const iconMap = {
+      deleteText: '<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/>',
+      keepText:   '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+      createText: '<path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.93 4.93l2.12 2.12"/><path d="M16.95 16.95l2.12 2.12"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.93 19.07l2.12-2.12"/><path d="M16.95 7.05l2.12-2.12"/><circle cx="12" cy="12" r="4"/>'
+    };
+    col.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${iconMap[field]}</svg>
+        </div>
+        <p>Esperando respuestas…</p>
+      </div>`;
     return;
   }
+
+  // Remove cards that no longer have content in this field
+  const seen = new Set(filtered.map(r => r.participantId));
+  col.querySelectorAll('.card-item').forEach(el => {
+    if (!seen.has(el.getAttribute('data-id'))) el.remove();
+  });
+  // Remove empty state if present
+  const empty = col.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  // Build/update items
   filtered.forEach(item => {
-    const existingEl = col.querySelector(`[data-id="${item.participantId}"]`);
-    if (existingEl) {
-      const oldText = existingEl.querySelector('.card-text').textContent;
+    let el = col.querySelector(`[data-id="${item.participantId}"]`);
+    if (el) {
+      const oldText = el.querySelector('.card-text').textContent;
       if (oldText !== item[field]) {
-        existingEl.querySelector('.card-text').textContent = item[field];
-        existingEl.querySelector('.card-time').textContent = timeAgo(item.submittedAt);
-        const ver = existingEl.querySelector('.card-ver');
-        if (item.version > 1) ver.textContent = `· editado`;
-        existingEl.classList.remove('updated');
-        void existingEl.offsetWidth;
-        existingEl.classList.add('updated');
+        el.querySelector('.card-text').textContent = item[field];
+        el.querySelector('.card-stamp .time').textContent = timeAgo(item.submittedAt);
+        const stampEdit = el.querySelector('.edit-pill');
+        if (item.version > 1 && !stampEdit) {
+          const stamp = el.querySelector('.card-stamp');
+          const pill = document.createElement('span');
+          pill.className = 'edit-pill';
+          pill.textContent = 'editado';
+          stamp.appendChild(pill);
+        }
+        el.classList.remove('updated');
+        void el.offsetWidth;
+        el.classList.add('updated');
+      } else {
+        // refresh "time ago" text
+        el.querySelector('.card-stamp .time').textContent = timeAgo(item.submittedAt);
       }
     } else {
-      const el = document.createElement('div');
+      el = document.createElement('div');
       el.className = 'card-item';
       el.setAttribute('data-id', item.participantId);
+      const editPill = item.version > 1 ? '<span class="edit-pill">editado</span>' : '';
       el.innerHTML = `
         <div class="card-meta">
-          <span class="card-author">${item.name}</span>
-          <span>
-            <span class="card-time">${timeAgo(item.submittedAt)}</span>
-            <span class="card-ver">${item.version > 1 ? '· editado' : ''}</span>
+          <span class="card-author">${escapeHtml(item.name)}</span>
+          <span class="card-stamp">
+            <span class="time">${timeAgo(item.submittedAt)}</span>
+            ${editPill}
           </span>
         </div>
-        <div class="card-text">${item[field]}</div>
+        <div class="card-text">${escapeHtml(item[field])}</div>
       `;
-      if (col.querySelector('.empty-state')) col.innerHTML = '';
-      col.appendChild(el);
+      col.insertBefore(el, col.firstChild);
     }
   });
+
+  // Reorder DOM to match sort order (newest first)
+  const order = filtered.map(r => r.participantId);
+  const nodes = Array.from(col.querySelectorAll('.card-item'));
+  nodes.sort((a, b) => order.indexOf(a.getAttribute('data-id')) - order.indexOf(b.getAttribute('data-id')));
+  nodes.forEach(n => col.appendChild(n));
 }
 
 async function poll() {
@@ -216,12 +800,24 @@ async function poll() {
     sessionOpen = session.open;
     const total = responses.length;
     const withResp = responses.filter(r => r.deleteText || r.keepText || r.createText).length;
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-responses').textContent = withResp;
+    bumpStat('stat-total', total);
+    bumpStat('stat-responses', withResp);
+    lastTotal = total; lastResp = withResp;
+
     renderCol('cards-del', 'cnt-del', responses, 'deleteText');
     renderCol('cards-kp',  'cnt-kp',  responses, 'keepText');
     renderCol('cards-cr',  'cnt-cr',  responses, 'createText');
-  } catch(e) {}
+
+    // Waiting hero (when no responses yet AND session is open)
+    const waiting = document.getElementById('waiting');
+    if (sessionOpen && total === 0) waiting.classList.add('show');
+    else waiting.classList.remove('show');
+
+    // Toggle closed overlay (only if there's no data; we don't want to obscure the recap)
+    const overlay = document.getElementById('overlay-closed');
+    if (!sessionOpen && total === 0) overlay.classList.add('show');
+    else overlay.classList.remove('show');
+  } catch (e) {}
 }
 
 poll();
