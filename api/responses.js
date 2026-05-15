@@ -1,25 +1,32 @@
 // api/responses.js - Vercel Serverless Function
-// Uses Vercel KV (Redis) for storage. Set KV_REST_API_URL and KV_REST_API_TOKEN in env vars.
 
 const STORAGE_KEY = 'dkc_responses';
 const SESSION_KEY = 'dkc_session';
 
+// Prueba todos los nombres posibles que genera Vercel + Upstash
+const KV_URL =
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.UPSTASH_REDIS_REST_REDIS_URL ||
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_URL ||
+  process.env.KV_REST_API_URL;
+
+const KV_TOKEN =
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN ||
+  process.env.KV_REST_API_TOKEN;
+
 async function kvGet(key) {
-  const res = await fetch(`${process.env.KV_REST_API_URL}/get/${key}`, {
-    headers: { Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}` }
+  const res = await fetch(`${KV_URL}/get/${key}`, {
+    headers: { Authorization: `Bearer ${KV_TOKEN}` }
   });
   const data = await res.json();
   return data.result ? JSON.parse(data.result) : null;
 }
 
 async function kvSet(key, value) {
-  await fetch(`${process.env.KV_REST_API_URL}/set/${key}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(JSON.stringify(value))
+  const encoded = encodeURIComponent(JSON.stringify(value));
+  await fetch(`${KV_URL}/set/${key}/${encoded}`, {
+    headers: { Authorization: `Bearer ${KV_TOKEN}` }
   });
 }
 
