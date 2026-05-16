@@ -1073,6 +1073,10 @@ function render(showFlash) {
 
   // Columns
   renderList('list-del', 'n-del', allResponses, 'deleteText', newIds);
+  // Show analysis panel whenever there are responses
+  if (allResponses.length > 0) {
+    document.getElementById('analysis-panel').style.display = '';
+  }
   renderList('list-kp',  'n-kp',  allResponses, 'keepText', newIds);
   renderList('list-cr',  'n-cr',  allResponses, 'createText', newIds);
 
