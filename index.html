@@ -120,6 +120,9 @@
   .w-top img {
     height: 28px; width: auto;
     opacity: 0.95;
+    background: #fff;
+    padding: 3px 4px;
+    border-radius: 3px;
   }
 
   /* Hero text — sits top-left over the gradient */
@@ -248,19 +251,18 @@
      ════════════════════════════════════════════════ */
   #s-form {
     background:
-      radial-gradient(ellipse 90% 60% at 80% 90%, rgba(120, 88, 255, 0.65) 0%, transparent 60%),
-      radial-gradient(ellipse 80% 50% at 20% 80%, rgba(93, 54, 255, 0.55) 0%, transparent 65%),
-      linear-gradient(180deg, #001550 0%, #0E0637 55%, #1C0C6E 100%);
-    color: #fff;
+      radial-gradient(ellipse 140% 60% at 100% 0%, rgba(226, 216, 255, 0.55) 0%, transparent 55%),
+      radial-gradient(ellipse 120% 50% at 0% 100%, rgba(209, 239, 255, 0.5) 0%, transparent 55%),
+      var(--canvas);
   }
   #s-form > * { position: relative; z-index: 1; }
 
   .form-header {
     padding: max(env(safe-area-inset-top), 12px) 18px 14px;
-    background: rgba(0, 8, 40, 0.55);
+    background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--line);
     position: sticky; top: 0; z-index: 10;
   }
   /* Brand accent bar */
@@ -276,11 +278,11 @@
   }
   .form-greet { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
   .form-greet .hi {
-    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55);
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
     text-transform: uppercase; letter-spacing: 0.1em;
   }
   .form-greet .name {
-    font-size: 16px; font-weight: 700; color: #fff;
+    font-size: 16px; font-weight: 700; color: var(--ink);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     max-width: 200px;
     display: flex; align-items: center; gap: 8px;
@@ -315,12 +317,12 @@
   .progress-wrap { margin-top: 12px; }
   .progress-label {
     display: flex; justify-content: space-between;
-    font-size: 12px; color: rgba(255,255,255,0.55); margin-bottom: 6px;
+    font-size: 12px; color: var(--ink-3); margin-bottom: 6px;
     font-weight: 500;
   }
-  .progress-label .pct { font-weight: 700; color: rgba(255,255,255,0.85); }
+  .progress-label .pct { font-weight: 700; color: var(--ink-2); }
   .progress-bar {
-    height: 6px; background: rgba(255,255,255,0.12);
+    height: 6px; background: var(--line);
     border-radius: 3px; overflow: hidden;
     display: flex; gap: 2px;
   }
@@ -663,6 +665,36 @@
       max-width: 540px; margin: 0 auto; width: 100%;
     }
   }
+
+  /* ── ANALYSIS SCREEN ── */
+  #s-analysis { background: linear-gradient(180deg, #001550 0%, #0E0637 55%, #1C0C6E 100%); color: #fff; padding: 0; }
+  .sa-header { padding: max(env(safe-area-inset-top),16px) 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,8,40,0.4); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 10; }
+  .sa-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 4px; }
+  .sa-title { font-size: 18px; font-weight: 800; color: #fff; }
+  .sa-scroll { padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; overflow-y: auto; }
+  .sa-hero { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; }
+  .sa-headline { font-size: 20px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+  .sa-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  .sa-section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; }
+  .sa-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 12px; }
+  .sa-item { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .sa-item:last-child { border-bottom: none; }
+  .sa-item-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .sa-item-desc { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.4; }
+  .sa-email-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 20px; }
+  .sa-email-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .sa-email-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 14px; }
+  .sa-email-input { width: 100%; padding: 13px 16px; font-size: 15px; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; outline: none; font-family: inherit; transition: border-color 0.2s; }
+  .sa-email-input:focus { border-color: rgba(184,148,255,0.6); }
+  .sa-email-input::placeholder { color: rgba(255,255,255,0.25); }
+  .sa-email-btn { width: 100%; margin-top: 10px; padding: 15px; font-size: 15px; font-weight: 700; background: linear-gradient(135deg, #534AB7, #7B5CFA); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+  .sa-email-btn:hover { opacity: 0.9; }
+  .sa-email-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .sa-analyzing { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 16px; padding: 3rem 2rem; text-align: center; }
+  .sa-analyzing-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #B894FF; border-radius: 50%; animation: spin 1s linear infinite; }
+  .sa-analyzing-title { font-size: 20px; font-weight: 800; color: #fff; }
+  .sa-analyzing-sub { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6; max-width: 280px; }
+
 </style>
 </head>
 <body>
@@ -709,10 +741,7 @@
         <span class="hi">Hola</span>
         <span class="name" id="greeting">—</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="session-badge" id="session-badge">Sesión abierta</div>
-        <button onclick="changeUser()" style="font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;font-family:inherit;">✏️ No soy yo</button>
-      </div>
+      <div class="session-badge" id="session-badge">Sesión abierta</div>
     </div>
     <div class="progress-wrap">
       <div class="progress-label">
@@ -838,6 +867,22 @@
   </div>
 </div>
 
+
+<!-- ANALYSIS SCREEN -->
+<div class="screen" id="s-analysis">
+  <div class="sa-header">
+    <div class="sa-eyebrow">SAP Partner Summit · Resultados</div>
+    <div class="sa-title" id="sa-title">Análisis del grupo</div>
+  </div>
+  <div id="sa-content" style="display:flex;flex-direction:column;flex:1">
+    <div class="sa-analyzing">
+      <div class="sa-analyzing-spinner"></div>
+      <div class="sa-analyzing-title">Analizando…</div>
+      <div class="sa-analyzing-sub">En breve vas a poder ver los resultados del grupo y mandártelos a tu mail.</div>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -897,21 +942,6 @@ async function checkAndRestore(data) {
     showScreen('s-form');
     setupForm();
   }
-}
-
-function changeUser() {
-  if (!confirm("¿Querés cambiar tu nombre? Tus respuestas enviadas se perderán.")) return;
-  localStorage.removeItem("dkc_participant");
-  ["del","kp","cr"].forEach(k => localStorage.removeItem("dkc_draft_" + k));
-  participantId = null;
-  participantName = "";
-  hasSubmitted = false;
-  document.getElementById("name-input").value = "";
-  document.getElementById("btn-start").disabled = true;
-  document.getElementById("name-input").addEventListener("input", function() {
-    document.getElementById("btn-start").disabled = !this.value.trim();
-  });
-  showScreen("s-welcome");
 }
 
 function startSession() {
@@ -1105,6 +1135,94 @@ function closeSuccess() {
 }
 
 init();
+
+// ── ANALYSIS POLLING (participant) ──
+const ANALYZE_API = '/api/analyze';
+const EMAIL_API_P = '/api/email';
+
+async function pollForAnalysis() {
+  try {
+    const res = await fetch(ANALYZE_API + '?t=' + Date.now());
+    const data = await res.json();
+    if (data.analysis && data.analysis.status === 'ready' && data.analysis.published) {
+      showAnalysisScreen(data.analysis);
+    }
+  } catch(e) {}
+}
+
+function showAnalysisScreen(analysis) {
+  const d = analysis.data;
+  const content = document.getElementById('sa-content');
+  content.innerHTML = `
+    <div class="sa-scroll">
+      <div class="sa-hero">
+        <div class="sa-headline">${d.headline}</div>
+        <div class="sa-sub">${d.subheadline}</div>
+      </div>
+      ${d.consensos && d.consensos.length ? `<div class="sa-section">
+        <div class="sa-section-title">✅ Consensos del grupo</div>
+        ${d.consensos.map(c => `<div class="sa-item">
+          <div class="sa-item-title">${c.titulo}</div>
+          <div class="sa-item-desc">${c.descripcion}</div>
+        </div>`).join('')}
+      </div>` : ''}
+      ${d.ideas_radicales && d.ideas_radicales.length ? `<div class="sa-section">
+        <div class="sa-section-title">🚀 Ideas que surgieron</div>
+        ${d.ideas_radicales.map(i => `<div class="sa-item">
+          <div class="sa-item-title">${i.titulo}</div>
+          <div class="sa-item-desc">${i.descripcion}</div>
+        </div>`).join('')}
+      </div>` : ''}
+      ${d.proximos_pasos && d.proximos_pasos.length ? `<div class="sa-section">
+        <div class="sa-section-title">→ Próximos pasos</div>
+        ${d.proximos_pasos.map((p,i) => `<div class="sa-item">
+          <div class="sa-item-title">${i+1}. ${p.accion}</div>
+          <div class="sa-item-desc">${p.responsable} · ${p.plazo}</div>
+        </div>`).join('')}
+      </div>` : ''}
+      <div class="sa-email-box">
+        <div class="sa-email-title">📧 Mandátelo a tu mail</div>
+        <div class="sa-email-sub">Recibí el análisis completo con todos los insights del grupo.</div>
+        <input class="sa-email-input" type="email" id="sa-email-input" placeholder="tu@email.com" />
+        <button class="sa-email-btn" id="sa-email-btn" onclick="sendParticipantEmail()">Enviarme el análisis →</button>
+      </div>
+    </div>
+  `;
+  showScreen('s-analysis');
+}
+
+async function sendParticipantEmail() {
+  const email = document.getElementById('sa-email-input').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('sa-email-input').focus();
+    return;
+  }
+  const btn = document.getElementById('sa-email-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  try {
+    const analysisRes = await fetch(ANALYZE_API);
+    const analysisData = await analysisRes.json();
+    const res = await fetch(EMAIL_API_P, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ to: email, type: 'participant', analysis: analysisData.analysis, participantName })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ ¡Listo! Revisá tu casilla';
+    } else {
+      btn.textContent = '❌ Error, intentá de nuevo';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = '❌ Error de conexión';
+    btn.disabled = false;
+  }
+}
+
+setInterval(pollForAnalysis, 8000);
+
 </script>
 </body>
 </html>

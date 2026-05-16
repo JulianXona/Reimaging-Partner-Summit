@@ -495,6 +495,43 @@
     .card-text { font-size: 22px; }
     .card-author { font-size: 17px; }
   }
+
+  /* ── ANALYSIS OVERLAY ── */
+  .analysis-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #001550 0%, #0E0637 55%, #1C0C6E 100%); z-index: 100; display: none; flex-direction: column; padding: 28px; overflow-y: auto; }
+  .analysis-overlay.visible { display: flex; }
+  .ao-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+  .ao-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 8px; }
+  .ao-headline { font-size: clamp(28px, 4vw, 48px); font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 6px; }
+  .ao-sub { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.5; max-width: 600px; }
+  .ao-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .ao-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; }
+  .ao-card-full { grid-column: 1 / -1; }
+  .ao-card-title { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 14px; }
+  .ao-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .ao-item:last-child { border-bottom: none; }
+  .ao-item-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .ao-item-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  .ao-item-meta { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 4px; font-style: italic; }
+  .fact-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 20px; margin-left: 6px; }
+  .fact-alta { background: rgba(46,125,50,0.3); color: #81c784; }
+  .fact-media { background: rgba(230,81,0,0.3); color: #ffb74d; }
+  .fact-baja { background: rgba(198,40,40,0.3); color: #e57373; }
+  .ao-steps { display: flex; flex-direction: column; gap: 8px; }
+  .ao-step { display: flex; gap: 12px; align-items: flex-start; }
+  .ao-step-num { width: 24px; height: 24px; border-radius: 50%; background: rgba(184,148,255,0.3); color: #B894FF; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ao-step-text { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; padding-top: 3px; }
+  .ao-donut-wrap { display: flex; align-items: center; justify-content: center; gap: 32px; padding: 8px 0; }
+  .ao-donut-labels { display: flex; flex-direction: column; gap: 10px; }
+  .ao-donut-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); }
+  .ao-donut-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ao-donut-val { font-weight: 700; color: #fff; margin-left: 4px; }
+  .analyzing-board { position: fixed; inset: 0; background: linear-gradient(135deg, #001550 0%, #0E0637 55%, #1C0C6E 100%); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+  .analyzing-board.visible { display: flex; }
+  .ab-spinner { width: 60px; height: 60px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #B894FF; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ab-title { font-size: 28px; font-weight: 800; color: #fff; }
+  .ab-sub { font-size: 16px; color: rgba(255,255,255,0.5); text-align: center; max-width: 400px; line-height: 1.6; }
+
 </style>
 </head>
 <body>
@@ -822,6 +859,133 @@ async function poll() {
 
 poll();
 setInterval(poll, 5000);
+
+
+// ── ANALYSIS POLLING ──
+const ANALYZE_API = '/api/analyze';
+let analysisShown = false;
+
+async function pollAnalysis() {
+  try {
+    const res = await fetch(ANALYZE_API + '?t=' + Date.now());
+    const data = await res.json();
+    const analysis = data.analysis;
+    const analyzingEl = document.getElementById('analyzing-board');
+    const overlayEl = document.getElementById('analysis-overlay');
+
+    if (!analysis || analysis.status === 'idle') {
+      analyzingEl.classList.remove('visible');
+      overlayEl.classList.remove('visible');
+    } else if (analysis.status === 'analyzing') {
+      analyzingEl.classList.add('visible');
+      overlayEl.classList.remove('visible');
+    } else if (analysis.status === 'ready' && analysis.published) {
+      analyzingEl.classList.remove('visible');
+      renderAnalysisOverlay(analysis);
+      overlayEl.classList.add('visible');
+    } else if (analysis.status === 'ready' && !analysis.published) {
+      analyzingEl.classList.remove('visible');
+      overlayEl.classList.remove('visible');
+    }
+  } catch(e) {}
+}
+
+function donut(del, kp, cr) {
+  const total = del + kp + cr || 1;
+  const dp = Math.round(del/total*100);
+  const kp2 = Math.round(kp/total*100);
+  const cr2 = 100 - dp - kp2;
+  const r = 54; const cx = 64; const cy = 64;
+  const circ = 2 * Math.PI * r;
+  const delDash = (dp/100)*circ;
+  const kpDash  = (kp2/100)*circ;
+  const crDash  = (cr2/100)*circ;
+  const delOff  = 0;
+  const kpOff   = -delDash;
+  const crOff   = -(delDash + kpDash);
+  return `<svg width="128" height="128" viewBox="0 0 128 128">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#DF1278" stroke-width="16" stroke-dasharray="${delDash} ${circ}" stroke-dashoffset="${delOff}" transform="rotate(-90 ${cx} ${cy})"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#04ACA7" stroke-width="16" stroke-dasharray="${kpDash} ${circ}" stroke-dashoffset="${kpOff}" transform="rotate(-90 ${cx} ${cy})"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#B894FF" stroke-width="16" stroke-dasharray="${crDash} ${circ}" stroke-dashoffset="${crOff}" transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="18" font-weight="800">${total}</text>
+    <text x="${cx}" y="${cy+18}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9">respuestas</text>
+  </svg>`;
+}
+
+function renderAnalysisOverlay(analysis) {
+  const d = analysis.data;
+  const dist = d.distribucion || {};
+  const overlay = document.getElementById('analysis-overlay');
+  overlay.innerHTML = `
+    <div class="ao-header">
+      <div>
+        <div class="ao-eyebrow">SAP Partner Summit · Delete / Keep / Create · Análisis IA</div>
+        <div class="ao-headline">${d.headline}</div>
+        <div class="ao-sub">${d.subheadline}</div>
+      </div>
+    </div>
+    <div class="ao-grid">
+      <div class="ao-card">
+        <div class="ao-card-title">⚡ Tensiones</div>
+        ${(d.tensiones||[]).map(t => `<div class="ao-item">
+          <div class="ao-item-title">${t.titulo}</div>
+          <div class="ao-item-desc">${t.descripcion}</div>
+          ${t.historico ? `<div class="ao-item-meta">📋 ${t.historico}</div>` : ''}
+        </div>`).join('')}
+      </div>
+      <div class="ao-card">
+        <div class="ao-card-title">✅ Consensos</div>
+        ${(d.consensos||[]).map(c => `<div class="ao-item">
+          <div class="ao-item-title">${c.titulo}</div>
+          <div class="ao-item-desc">${c.descripcion}</div>
+          ${c.historico ? `<div class="ao-item-meta">📋 ${c.historico}</div>` : ''}
+        </div>`).join('')}
+      </div>
+      <div class="ao-card">
+        <div class="ao-card-title">📊 Distribución</div>
+        <div class="ao-donut-wrap">
+          ${donut(dist.delete_count||0, dist.keep_count||0, dist.create_count||0)}
+          <div class="ao-donut-labels">
+            <div class="ao-donut-label"><div class="ao-donut-dot" style="background:#DF1278"></div>Delete <span class="ao-donut-val">${dist.delete_count||0}</span></div>
+            <div class="ao-donut-label"><div class="ao-donut-dot" style="background:#04ACA7"></div>Keep <span class="ao-donut-val">${dist.keep_count||0}</span></div>
+            <div class="ao-donut-label"><div class="ao-donut-dot" style="background:#B894FF"></div>Create <span class="ao-donut-val">${dist.create_count||0}</span></div>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          ${(d.ideas_radicales||[]).slice(0,2).map(i => `<div class="ao-item">
+            <div class="ao-item-title">🚀 ${i.titulo}<span class="fact-badge fact-${i.factibilidad}">${i.factibilidad}</span></div>
+            <div class="ao-item-desc">${i.descripcion}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="ao-card ao-card-full">
+        <div class="ao-card-title">→ Próximos pasos</div>
+        <div class="ao-steps">
+          ${(d.proximos_pasos||[]).map((p,i) => `<div class="ao-step">
+            <div class="ao-step-num">${i+1}</div>
+            <div class="ao-step-text">${p.accion} <span style="color:rgba(255,255,255,0.35);font-size:11px">· ${p.responsable} · ${p.plazo}</span></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+pollAnalysis();
+setInterval(pollAnalysis, 6000);
+
 </script>
+
+<!-- Analyzing state -->
+<div class="analyzing-board" id="analyzing-board">
+  <div class="ab-spinner"></div>
+  <div class="ab-title">Analizando respuestas…</div>
+  <div class="ab-sub">Claude está procesando las ideas del grupo y cruzándolas con el historial del Partner Summit. En breve verás los resultados.</div>
+</div>
+
+<!-- Analysis overlay -->
+<div class="analysis-overlay" id="analysis-overlay"></div>
+
 </body>
 </html>
