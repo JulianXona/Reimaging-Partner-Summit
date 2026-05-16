@@ -1481,9 +1481,8 @@ let currentAnalysis = null;
 async function runAnalysis() {
   const responses = getModdedResponses();
   if (!responses.length) { showToast('No hay respuestas para analizar'); return; }
-  const btn = document.getElementById('btn-analyze');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ Analizando...';
+  const btn = document.querySelector('#analysis-actions .btn-analyze');
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Analizando...'; }
   showAnalysisContent('analyzing');
   document.getElementById('analysis-panel').style.display = '';
   try {
@@ -1505,8 +1504,8 @@ async function runAnalysis() {
     showToast('❌ Error de conexión');
     showAnalysisContent('empty');
   }
-  btn.disabled = false;
-  btn.innerHTML = '✨ Re-analizar';
+  const btnAfter = document.querySelector('#analysis-actions .btn-analyze');
+  if (btnAfter) { btnAfter.disabled = false; btnAfter.innerHTML = '✨ Re-analizar'; }
 }
 
 async function publishAnalysis() {
