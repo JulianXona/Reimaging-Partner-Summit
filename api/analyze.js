@@ -170,11 +170,23 @@ Sé específico, usá los nombres reales cuando sea relevante, y siempre contras
         });
 
         const aiData = await aiRes.json();
+        
+        // Handle API errors
+        if (aiData.error) {
+          throw new Error('Anthropic API error: ' + aiData.error.message);
+        }
+        if (!aiData.content || !Array.isArray(aiData.content)) {
+          throw new Error('Unexpected API response: ' + JSON.stringify(aiData).slice(0, 200));
+        }
+        
         const rawText = aiData.content.map(b => b.text || '').join('');
         
-        // Clean and parse JSON
-        const clean = rawText.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(clean);
+        // Clean and parse JSON — handle markdown fences and trailing text
+        let clean = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+        // Extract JSON object if there's extra text
+        const jsonMatch = clean.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('No JSON found in response: ' + clean.slice(0, 300));
+        const parsed = JSON.parse(jsonMatch[0]);
 
         const analysis = {
           status: 'ready',
