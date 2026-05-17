@@ -231,8 +231,14 @@ IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el s
     if (action === 'publish') {
       const analysis = await kvGet('dkc_analysis');
       if (!analysis) return res.json({ ok: false, error: 'No hay análisis' });
-      analysis.published = true;
-      analysis.publishedAt = new Date().toISOString();
+      const target = payload && payload.target ? payload.target : (req.body.target || 'board');
+      if (target === 'users') {
+        analysis.publishedUsers = true;
+        analysis.publishedUsersAt = new Date().toISOString();
+      } else {
+        analysis.published = true;
+        analysis.publishedAt = new Date().toISOString();
+      }
       await kvSet('dkc_analysis', analysis);
       return res.json({ ok: true });
     }
@@ -240,7 +246,12 @@ IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el s
     if (action === 'unpublish') {
       const analysis = await kvGet('dkc_analysis');
       if (!analysis) return res.json({ ok: false });
-      analysis.published = false;
+      const target = payload && payload.target ? payload.target : (req.body.target || 'board');
+      if (target === 'users') {
+        analysis.publishedUsers = false;
+      } else {
+        analysis.published = false;
+      }
       await kvSet('dkc_analysis', analysis);
       return res.json({ ok: true });
     }
