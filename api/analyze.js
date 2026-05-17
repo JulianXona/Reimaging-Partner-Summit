@@ -158,7 +158,7 @@ Respondé ÚNICAMENTE con un objeto JSON válido, sin texto antes ni después, s
   "resumen_ejecutivo": "Párrafo de 3-4 oraciones para enviar por mail. Directo, sin preambuló, accionable."
 }
 
-IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el summit 2026, no qué hay que corregir del pasado. Los summits anteriores son referencia para entender qué ya se intentó, qué funcionó y qué no. Los próximos pasos deben ser concretos y aplicables al diseño del summit 2026. Usá los nombres reales de los participantes cuando sea relevante. Máximo 5 items por sección.`;
+IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el summit 2026, no qué hay que corregir del pasado. Los summits anteriores son referencia para entender qué ya se intentó, qué funcionó y qué no. Los próximos pasos deben ser concretos y aplicables al diseño del summit 2026. NUNCA menciones nombres de personas ni de empresas o agencias organizadoras — usá 'un participante', 'varios líderes', 'el grupo', etc. Máximo 5 items por sección.`;
 
       try {
         const aiRes = await fetch('https://api.anthropic.com/v1/messages', {

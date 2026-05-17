@@ -108,6 +108,7 @@ export default async function handler(req, res) {
       if (action === 'reset') {
         await kvSet(STORAGE_KEY, []);
         await kvSet(SESSION_KEY, { open: true });
+        await kvSet('dkc_analysis', null);
         return res.json({ ok: true });
       }
 
