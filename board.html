@@ -551,7 +551,6 @@
   .qr-hero-url { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.8); }
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -698,7 +697,7 @@
       <div class="waiting-cat-dot"></div>
       <div class="waiting-cat-label">DELETE</div>
     <div class="qr-hero">
-      <div id="qr-hero-large"></div>
+      <img src="/public/qr.png" alt="QR" width="180" height="180" style="display:block;border-radius:10px;background:#fff;padding:8px;" />
       <div class="qr-hero-label">Escaneá para participar</div>
       <div class="qr-hero-url">reimaging-partner-summit.vercel.app</div>
     </div>
@@ -890,24 +889,7 @@ poll();
 setInterval(poll, 5000);
 
 // ── QR CODE ──
-function initQR() {
-  const url = 'https://reimaging-partner-summit.vercel.app';
-  // Small corner QR
-  new QRCode(document.getElementById('qr-small'), {
-    text: url, width: 100, height: 100,
-    colorDark: '#1a1a18', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
-  // Large hero QR
-  const heroEl = document.getElementById('qr-hero-large');
-  if (heroEl) {
-    new QRCode(heroEl, {
-      text: url, width: 180, height: 180,
-      colorDark: '#1a1a18', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
-}
+function initQR() { /* QR loaded as static image from /public/qr.png */ }
 
 function updateQR(totalResponses, analysisVisible) {
   const qr = document.getElementById('qr-panel');
@@ -1042,10 +1024,10 @@ setInterval(pollAnalysis, 6000);
 
 <!-- Analyzing state -->
 
-<!-- QR Panel (small, fixed corner - always visible unless analysis) -->
+<!-- QR Panel (small, fixed corner) -->
 <div class="qr-panel" id="qr-panel">
   <div class="qr-label">Escaneá para participar</div>
-  <div id="qr-small"></div>
+  <img src="/public/qr.png" alt="QR" width="110" height="110" style="display:block;border-radius:6px;" />
   <div class="qr-url">reimaging-partner-summit.vercel.app</div>
 </div>
 
