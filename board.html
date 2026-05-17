@@ -551,6 +551,7 @@
   .qr-hero-url { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.8); }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -697,7 +698,7 @@
       <div class="waiting-cat-dot"></div>
       <div class="waiting-cat-label">DELETE</div>
     <div class="qr-hero">
-      <img id="qr-hero-img" src="" alt="QR" width="180" height="180" />
+      <div id="qr-hero-large"></div>
       <div class="qr-hero-label">Escaneá para participar</div>
       <div class="qr-hero-url">reimaging-partner-summit.vercel.app</div>
     </div>
@@ -891,11 +892,21 @@ setInterval(poll, 5000);
 // ── QR CODE ──
 function initQR() {
   const url = 'https://reimaging-partner-summit.vercel.app';
-  const qrSmall = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(url);
-  const qrLarge = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(url);
-  document.getElementById('qr-img').src = qrSmall;
-  const hero = document.getElementById('qr-hero-img');
-  if (hero) hero.src = qrLarge;
+  // Small corner QR
+  new QRCode(document.getElementById('qr-small'), {
+    text: url, width: 100, height: 100,
+    colorDark: '#1a1a18', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  // Large hero QR
+  const heroEl = document.getElementById('qr-hero-large');
+  if (heroEl) {
+    new QRCode(heroEl, {
+      text: url, width: 180, height: 180,
+      colorDark: '#1a1a18', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }
 }
 
 function updateQR(totalResponses, analysisVisible) {
@@ -1034,7 +1045,7 @@ setInterval(pollAnalysis, 6000);
 <!-- QR Panel (small, fixed corner - always visible unless analysis) -->
 <div class="qr-panel" id="qr-panel">
   <div class="qr-label">Escaneá para participar</div>
-  <img id="qr-img" src="" alt="QR" width="100" height="100" />
+  <div id="qr-small"></div>
   <div class="qr-url">reimaging-partner-summit.vercel.app</div>
 </div>
 
