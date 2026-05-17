@@ -101,6 +101,8 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { action, responses } = req.body;
 
+    if (!action) return res.json({ ok: false, error: 'No action' });
+
     if (action === 'analyze') {
       // Start analysis - set pending state first
       await kvSet('dkc_analysis', { status: 'analyzing', startedAt: new Date().toISOString() });
@@ -231,7 +233,7 @@ IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el s
     if (action === 'publish') {
       const analysis = await kvGet('dkc_analysis');
       if (!analysis) return res.json({ ok: false, error: 'No hay análisis' });
-      const target = payload && payload.target ? payload.target : (req.body.target || 'board');
+      const target = req.body.target || (payload && payload.target) || 'board';
       if (target === 'users') {
         analysis.publishedUsers = true;
         analysis.publishedUsersAt = new Date().toISOString();
@@ -246,7 +248,7 @@ IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el s
     if (action === 'unpublish') {
       const analysis = await kvGet('dkc_analysis');
       if (!analysis) return res.json({ ok: false });
-      const target = payload && payload.target ? payload.target : (req.body.target || 'board');
+      const target = req.body.target || (payload && payload.target) || 'board';
       if (target === 'users') {
         analysis.publishedUsers = false;
       } else {
