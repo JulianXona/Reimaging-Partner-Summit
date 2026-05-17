@@ -139,7 +139,7 @@ export default async function handler(req, res) {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        sender: { name: 'SAP Partner Summit', email: 'noreply@reimagining-partner-summit.vercel.app' },
+        sender: { name: 'SAP Partner Summit', email: 'julian@xona.com.ar' },
         to: [{ email: to }],
         subject,
         htmlContent: emailHtml
