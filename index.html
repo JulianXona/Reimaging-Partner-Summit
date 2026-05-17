@@ -716,7 +716,7 @@
     <input class="w-input" id="name-input" type="text"
            placeholder="Cómo te llamás" maxlength="60"
            autocomplete="off" autocapitalize="words" spellcheck="false">
-    <button class="btn-primary" id="btn-start" disabled>
+    <button class="btn-primary" id="btn-start" onclick="startSession()" disabled>
       <span>Empezar</span>
       <span class="arrow">→</span>
     </button>
@@ -919,6 +919,16 @@ function init() {
     document.getElementById('btn-start').disabled = !this.value.trim();
   });
 }
+
+// Always register input listener on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const inp = document.getElementById('name-input');
+  if (inp) {
+    inp.addEventListener('input', function() {
+      document.getElementById('btn-start').disabled = !this.value.trim();
+    });
+  }
+});
 
 async function checkAndRestore(data) {
   try {
