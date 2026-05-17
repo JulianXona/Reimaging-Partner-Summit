@@ -125,7 +125,7 @@ ${keeps || '(sin respuestas)'}
 CREATE — Lo que debería crearse:
 ${creates || '(sin respuestas)'}
 
-Generá un análisis estratégico en JSON con exactamente esta estructura (sin markdown, solo JSON puro):
+Respondé ÚNICAMENTE con un objeto JSON válido, sin texto antes ni después, sin markdown, sin comillas escapadas innecesarias. Usá solo comillas dobles. No uses apóstrofes dentro de los valores. El JSON debe tener exactamente esta estructura:
 
 {
   "headline": "Una frase potente que capture la esencia del diagnóstico colectivo (máx 12 palabras)",
@@ -168,7 +168,7 @@ Sé específico, usá los nombres reales cuando sea relevante, y siempre contras
           },
           body: JSON.stringify({
             model: 'claude-sonnet-4-6',
-            max_tokens: 2000,
+            max_tokens: 3000,
             messages: [{ role: 'user', content: prompt }]
           })
         });
@@ -185,12 +185,31 @@ Sé específico, usá los nombres reales cuando sea relevante, y siempre contras
         
         const rawText = aiData.content.map(b => b.text || '').join('');
         
-        // Clean and parse JSON — handle markdown fences and trailing text
+        // Clean and parse JSON — multiple strategies
         let clean = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-        // Extract JSON object if there's extra text
-        const jsonMatch = clean.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error('No JSON found in response: ' + clean.slice(0, 300));
-        const parsed = JSON.parse(jsonMatch[0]);
+        
+        // Find the outermost JSON object
+        const start = clean.indexOf('{');
+        const end = clean.lastIndexOf('}');
+        if (start === -1 || end === -1) throw new Error('No JSON object found in response');
+        clean = clean.slice(start, end + 1);
+        
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch(parseErr) {
+          // Try to fix common issues: trailing commas, unescaped quotes
+          const fixed = clean
+            .replace(/,\s*}/g, '}')
+            .replace(/,\s*]/g, ']')
+            .replace(/[\u2018\u2019]/g, "'")
+            .replace(/[\u201C\u201D]/g, '"');
+          try {
+            parsed = JSON.parse(fixed);
+          } catch(e2) {
+            throw new Error('JSON parse failed: ' + parseErr.message + ' | Raw: ' + clean.slice(0, 500));
+          }
+        }
 
         const analysis = {
           status: 'ready',
