@@ -1505,38 +1505,15 @@ function updateAnalysisActions() {
 async function promptEmailMod() {
   const email = prompt('¿A qué mail enviamos el análisis?');
   if (!email || !email.includes('@')) return;
-  const d = currentAnalysis && currentAnalysis.data;
-  if (!d) { showToast('❌ No hay análisis generado'); return; }
-
-  const subject = encodeURIComponent('Análisis Partner Summit · Delete / Keep / Create');
-  const body = encodeURIComponent([
-    'SAP PARTNER SUMMIT — ANÁLISIS DEL GRUPO',
-    '==========================================',
-    '',
-    d.headline || '',
-    d.subheadline || '',
-    '',
-    '— TENSIONES —',
-    ...(d.tensiones || []).map(t => '• ' + t.titulo + ': ' + t.descripcion + (t.historico ? ' [' + t.historico + ']' : '')),
-    '',
-    '— CONSENSOS —',
-    ...(d.consensos || []).map(c => '• ' + c.titulo + ': ' + c.descripcion),
-    '',
-    '— IDEAS RADICALES —',
-    ...(d.ideas_radicales || []).map(i => '• ' + i.titulo + ' (' + i.factibilidad + '): ' + i.descripcion),
-    '',
-    '— OPORTUNIDADES —',
-    ...(d.oportunidades || []).map(o => '• ' + o.titulo + ': ' + o.descripcion),
-    '',
-    '— PRÓXIMOS PASOS —',
-    ...(d.proximos_pasos || []).map((p, i) => (i+1) + '. ' + p.accion + ' (' + p.responsable + ' · ' + p.plazo + ')'),
-    '',
-    '— RESUMEN EJECUTIVO —',
-    d.resumen_ejecutivo || '',
-  ].join('\n'));
-
-  window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
-  showToast('📧 Abrí tu app de mail y enviá');
+  try {
+    const res = await fetch('/api/email', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ to: email, type: 'moderator', analysis: currentAnalysis })
+    });
+    const data = await res.json();
+    showToast(data.ok ? '📧 Mail enviado!' : '❌ ' + data.error);
+  } catch(e) { showToast('❌ Error al enviar'); }
 }
 
 function showAnalysisContent(state) {
