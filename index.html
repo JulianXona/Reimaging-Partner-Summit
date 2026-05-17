@@ -741,7 +741,10 @@
         <span class="hi">Hola</span>
         <span class="name" id="greeting">—</span>
       </div>
-      <div class="session-badge" id="session-badge">Sesión abierta</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="session-badge" id="session-badge">Sesión abierta</div>
+        <button onclick="changeUser()" style="font-size:11px;color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.08);border:none;cursor:pointer;padding:4px 10px;border-radius:20px;font-family:inherit;backdrop-filter:blur(8px);">✏️ No soy yo</button>
+      </div>
     </div>
     <div class="progress-wrap">
       <div class="progress-label">
@@ -942,6 +945,19 @@ async function checkAndRestore(data) {
     showScreen('s-form');
     setupForm();
   }
+}
+
+function changeUser() {
+  if (!confirm('¿Querés cambiar tu nombre?')) return;
+  localStorage.removeItem('dkc_participant');
+  ['del','kp','cr'].forEach(k => localStorage.removeItem('dkc_draft_' + k));
+  participantId = null;
+  participantName = '';
+  hasSubmitted = false;
+  if (pollInterval) clearInterval(pollInterval);
+  document.getElementById('name-input').value = '';
+  document.getElementById('btn-start').disabled = true;
+  showScreen('s-welcome');
 }
 
 function startSession() {

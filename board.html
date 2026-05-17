@@ -532,6 +532,21 @@
   .ab-title { font-size: 28px; font-weight: 800; color: #fff; }
   .ab-sub { font-size: 16px; color: rgba(255,255,255,0.5); text-align: center; max-width: 400px; line-height: 1.6; }
 
+
+  /* ── QR CODE ── */
+  .qr-panel { position: fixed; bottom: 28px; right: 28px; z-index: 50;
+    background: #fff; border-radius: 16px; padding: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .qr-panel.large { bottom: 50%; right: 50%; transform: translate(50%, 50%) scale(1);
+    padding: 28px; gap: 16px; }
+  .qr-panel img { display: block; }
+  .qr-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    color: #534AB7; text-transform: uppercase; text-align: center; }
+  .qr-url { font-size: 13px; color: #888; text-align: center; }
+  .qr-panel.hidden { display: none; }
+
 </style>
 </head>
 <body>
@@ -850,6 +865,11 @@ async function poll() {
     if (sessionOpen && total === 0) waiting.classList.add('show');
     else waiting.classList.remove('show');
 
+    // Update QR visibility
+    const analysisOverlay = document.getElementById('analysis-overlay');
+    const analysisVisible = analysisOverlay && analysisOverlay.classList.contains('visible');
+    updateQR(total, analysisVisible);
+
     // Toggle closed overlay (only if there's no data; we don't want to obscure the recap)
     const overlay = document.getElementById('overlay-closed');
     if (!sessionOpen && total === 0) overlay.classList.add('show');
@@ -859,6 +879,40 @@ async function poll() {
 
 poll();
 setInterval(poll, 5000);
+
+// ── QR CODE ──
+function initQR() {
+  const url = 'https://reimaging-partner-summit.vercel.app';
+  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(url);
+  document.getElementById('qr-img').src = qrUrl;
+}
+
+function updateQR(totalResponses, analysisVisible) {
+  const qr = document.getElementById('qr-panel');
+  if (!qr) return;
+  if (analysisVisible) {
+    qr.classList.add('hidden');
+    return;
+  }
+  qr.classList.remove('hidden');
+  if (totalResponses === 0) {
+    // Large centered when no one has responded
+    qr.classList.add('large');
+    qr.querySelector('img').width = 200;
+    qr.querySelector('img').height = 200;
+  } else {
+    // Small corner when board is filling up
+    qr.classList.remove('large');
+    qr.querySelector('img').width = 120;
+    qr.querySelector('img').height = 120;
+    qr.style.bottom = '28px';
+    qr.style.right = '28px';
+    qr.style.transform = '';
+  }
+}
+
+initQR();
+
 
 
 // ── ANALYSIS POLLING ──
@@ -883,6 +937,7 @@ async function pollAnalysis() {
       analyzingEl.classList.remove('visible');
       renderAnalysisOverlay(analysis);
       overlayEl.classList.add('visible');
+      updateQR(1, true); // hide QR when analysis shows
     } else if (analysis.status === 'ready' && !analysis.published) {
       analyzingEl.classList.remove('visible');
       overlayEl.classList.remove('visible');
@@ -978,10 +1033,18 @@ setInterval(pollAnalysis, 6000);
 </script>
 
 <!-- Analyzing state -->
+
+<!-- QR Panel -->
+<div class="qr-panel large" id="qr-panel">
+  <div class="qr-label">Escaneá para participar</div>
+  <img id="qr-img" src="" alt="QR" width="200" height="200" />
+  <div class="qr-url">reimaging-partner-summit.vercel.app</div>
+</div>
+
 <div class="analyzing-board" id="analyzing-board">
   <div class="ab-spinner"></div>
-  <div class="ab-title">Analizando respuestas…</div>
-  <div class="ab-sub">Claude está procesando las ideas del grupo y cruzándolas con el historial del Partner Summit. En breve verás los resultados.</div>
+  <div class="ab-title">Procesando respuestas…</div>
+  <div class="ab-sub">La IA está analizando las ideas del grupo y cruzándolas con el historial de los Partner Summits anteriores. En breve verán los resultados.</div>
 </div>
 
 <!-- Analysis overlay -->
