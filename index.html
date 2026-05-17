@@ -1145,7 +1145,11 @@ async function pollForAnalysis() {
     const res = await fetch(ANALYZE_API + '?t=' + Date.now());
     const data = await res.json();
     if (data.analysis && data.analysis.status === 'ready' && data.analysis.published) {
-      showAnalysisScreen(data.analysis);
+      // Only render if not already on analysis screen
+      const alreadyShowing = document.getElementById('s-analysis').classList.contains('active');
+      if (!alreadyShowing) {
+        showAnalysisScreen(data.analysis);
+      }
     }
   } catch(e) {}
 }
@@ -1221,7 +1225,19 @@ async function sendParticipantEmail() {
   }
 }
 
-setInterval(pollForAnalysis, 8000);
+let analysisPolling = setInterval(pollForAnalysis, 8000);
+
+// Pause polling while user types email so screen doesn't reset
+document.addEventListener('focusin', e => {
+  if (e.target && e.target.id === 'sa-email-input') {
+    clearInterval(analysisPolling);
+  }
+});
+document.addEventListener('focusout', e => {
+  if (e.target && e.target.id === 'sa-email-input') {
+    analysisPolling = setInterval(pollForAnalysis, 8000);
+  }
+});
 
 </script>
 </body>
