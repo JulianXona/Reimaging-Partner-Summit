@@ -110,11 +110,11 @@ export default async function handler(req, res) {
       const keeps   = responses.filter(r => r.keepText).map(r => `- ${r.name}: "${r.keepText}"`).join('\n');
       const creates = responses.filter(r => r.createText).map(r => `- ${r.name}: "${r.createText}"`).join('\n');
 
-      const prompt = `Sos un estratega de eventos con profundo conocimiento del ecosistema SAP en Latinoamérica. Tu tarea es analizar las respuestas de los líderes del Partner Summit y cruzarlas con el historial de las ediciones anteriores para generar insights accionables.
+      const prompt = `Sos un estratega de eventos con profundo conocimiento del ecosistema SAP en Latinoamérica. Tu tarea es analizar las respuestas de los líderes del Partner Summit 2025 (Cartagena) y usarlas para diseñar el PARTNER SUMMIT 2026. Los summits anteriores (2022, 2023, 2024, 2025) son contexto e historia — ya ocurrieron y no se pueden modificar. Todo el análisis debe orientarse hacia QUÉ HACER EN EL FUTURO, específicamente en el próximo summit 2026.
 
 ${HISTORICAL_CONTEXT}
 
-RESPUESTAS DE LOS LÍDERES EN LA DINÁMICA "DELETE / KEEP / CREATE" (${responses.length} participantes):
+RESPUESTAS DE LOS LÍDERES SOBRE CÓMO DEBERÍA SER EL PARTNER SUMMIT 2026 (${responses.length} participantes):
 
 DELETE — Lo que debería desaparecer:
 ${deletes || '(sin respuestas)'}
@@ -156,7 +156,7 @@ Respondé ÚNICAMENTE con un objeto JSON válido, sin texto antes ni después, s
   "resumen_ejecutivo": "Párrafo de 3-4 oraciones para enviar por mail. Directo, sin preambuló, accionable."
 }
 
-Sé específico, usá los nombres reales cuando sea relevante, y siempre contrastá con el historial. Máximo 5 items por sección.`;
+IMPORTANTE: Todo el análisis debe hablar en futuro — qué DEBERÍA TENER el summit 2026, no qué hay que corregir del pasado. Los summits anteriores son referencia para entender qué ya se intentó, qué funcionó y qué no. Los próximos pasos deben ser concretos y aplicables al diseño del summit 2026. Usá los nombres reales de los participantes cuando sea relevante. Máximo 5 items por sección.`;
 
       try {
         const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
