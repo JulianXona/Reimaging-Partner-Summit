@@ -1201,24 +1201,39 @@ async function sendParticipantEmail() {
   }
   const btn = document.getElementById('sa-email-btn');
   btn.disabled = true;
-  btn.textContent = 'Enviando…';
+  btn.textContent = 'Preparando…';
+
   try {
     const analysisRes = await fetch(ANALYZE_API);
     const analysisData = await analysisRes.json();
-    const res = await fetch(EMAIL_API_P, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ to: email, type: 'participant', analysis: analysisData.analysis, participantName })
-    });
-    const data = await res.json();
-    if (data.ok) {
-      btn.textContent = '✅ ¡Listo! Revisá tu casilla';
-    } else {
-      btn.textContent = '❌ Error, intentá de nuevo';
-      btn.disabled = false;
-    }
+    const d = analysisData.analysis && analysisData.analysis.data;
+    if (!d) { btn.textContent = '❌ Error, intentá de nuevo'; btn.disabled = false; return; }
+
+    const subject = encodeURIComponent('Análisis Partner Summit · Delete / Keep / Create');
+    const body = encodeURIComponent([
+      'SAP PARTNER SUMMIT — ANÁLISIS DEL GRUPO',
+      '==========================================',
+      '',
+      d.headline || '',
+      d.subheadline || '',
+      '',
+      '— CONSENSOS —',
+      ...(d.consensos || []).map(c => '• ' + c.titulo + ': ' + c.descripcion),
+      '',
+      '— IDEAS QUE SURGIERON —',
+      ...(d.ideas_radicales || []).map(i => '• ' + i.titulo + ': ' + i.descripcion),
+      '',
+      '— PRÓXIMOS PASOS —',
+      ...(d.proximos_pasos || []).map((p, i) => (i+1) + '. ' + p.accion + ' (' + p.responsable + ' · ' + p.plazo + ')'),
+      '',
+      '— RESUMEN EJECUTIVO —',
+      d.resumen_ejecutivo || '',
+    ].join('\n'));
+
+    window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+    btn.textContent = '✅ ¡Abrí tu app de mail y enviá!';
   } catch(e) {
-    btn.textContent = '❌ Error de conexión';
+    btn.textContent = '❌ Error, intentá de nuevo';
     btn.disabled = false;
   }
 }
