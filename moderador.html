@@ -705,33 +705,28 @@
   .mod-btn-del:hover { background: rgba(223,18,120,0.2); }
   .mod-btn-grp { background: rgba(83,74,183,0.1); color: #534AB7; }
   .mod-btn-grp:hover { background: rgba(83,74,183,0.2); }
-  .response.selecting { outline: 2px solid #534AB7; outline-offset: 2px; background: rgba(83,74,183,0.04); }
+  .response.selecting { outline: 2px solid #534AB7; outline-offset: 2px; background: rgba(83,74,183,0.04); cursor: pointer; }
   .grouped-card { background: var(--canvas); border-radius: 10px; border: 1.5px dashed #534AB7; padding: 12px 14px; margin-bottom: 8px; }
   .grouped-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .grouped-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #534AB7; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-  .grouped-label { font-size: 11px; font-weight: 600; color: var(--ink-2); margin-bottom: 2px; }
+  .grouped-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #534AB7; text-transform: uppercase; }
   .grouped-text { font-size: 13px; color: var(--ink); border: none; background: transparent; width: 100%; resize: vertical; min-height: 36px; font-family: inherit; line-height: 1.5; outline: none; }
   .grouped-names { font-size: 11px; color: var(--ink-3); margin-top: 6px; }
-  .grouped-actions { display: flex; gap: 6px; }
   .btn-ungroup { font-size: 11px; color: var(--ink-3); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; cursor: pointer; font-family: inherit; }
   .btn-ungroup:hover { background: var(--canvas); }
   .select-mode-bar { background: #534AB7; color: #fff; padding: 8px 14px; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; margin-bottom: 8px; }
   .select-mode-bar button { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: inherit; font-weight: 600; }
   .select-mode-bar button:hover { background: rgba(255,255,255,0.35); }
-  .response.hidden-by-mod { display: none; }
-
 
   /* ── ANALYSIS PANEL ── */
   .analysis-panel { background: var(--card); border-radius: var(--r-lg); border: 1px solid var(--line); padding: 24px; margin-top: 20px; }
   .analysis-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-  .analysis-panel-title { font-size: 16px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+  .analysis-panel-title { font-size: 16px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .analysis-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .analysis-preview { background: linear-gradient(135deg, #001550 0%, #0E0637 55%, #1C0C6E 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
   .analysis-headline { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; }
   .analysis-subheadline { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.5; }
   .analysis-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .analysis-section { background: var(--canvas); border-radius: 10px; padding: 14px 16px; }
-  .analysis-section-full { grid-column: 1 / -1; }
   .analysis-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 10px; }
   .analysis-item { padding: 8px 0; border-bottom: 1px solid var(--line); }
   .analysis-item:last-child { border-bottom: none; }
@@ -745,7 +740,7 @@
   .analysis-steps { display: flex; flex-direction: column; gap: 6px; }
   .analysis-step { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); }
   .analysis-step:last-child { border-bottom: none; }
-  .step-num { width: 20px; height: 20px; border-radius: 50%; background: #534AB7; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; }
+  .step-num { width: 20px; height: 20px; border-radius: 50%; background: #534AB7; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .step-text { font-size: 12px; color: var(--ink-2); line-height: 1.4; flex: 1; }
   .step-meta { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
   .analysis-analyzing { text-align: center; padding: 40px 20px; }
@@ -756,11 +751,15 @@
   .btn-analyze { background: linear-gradient(135deg, #534AB7, #7B5CFA); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s; }
   .btn-analyze:hover { opacity: 0.9; }
   .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-publish { background: #04ACA7; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+  .btn-publish { background: #04ACA7; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
   .btn-publish:hover { opacity: 0.9; }
+  .btn-publish-users { background: #534AB7; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+  .btn-publish-users:hover { opacity: 0.9; }
   .btn-email-mod { background: transparent; border: 1.5px solid var(--line); color: var(--ink-2); padding: 9px 16px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .btn-email-mod:hover { background: var(--canvas); }
-  .published-badge { background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .pub-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .pub-badge-board { background: #e8f5e9; color: #2e7d32; }
+  .pub-badge-users { background: #EEEDFE; color: #534AB7; }
 
 </style>
 </head>
@@ -926,10 +925,11 @@
     <div class="analysis-panel-head">
       <div class="analysis-panel-title">
         ✨ Análisis con IA
-        <span class="published-badge" id="published-badge" style="display:none">● Publicado en board</span>
+        <span class="pub-badge pub-badge-board" id="badge-board" style="display:none">📺 En board</span>
+        <span class="pub-badge pub-badge-users" id="badge-users" style="display:none">📱 En participantes</span>
       </div>
       <div class="analysis-actions" id="analysis-actions">
-        <button class="btn-analyze" id="btn-analyze" onclick="runAnalysis()">✨ Analizar respuestas</button>
+        <button class="btn-analyze" onclick="runAnalysis()">✨ Analizar respuestas</button>
       </div>
     </div>
     <div id="analysis-content"></div>
@@ -1073,10 +1073,7 @@ function render(showFlash) {
 
   // Columns
   renderList('list-del', 'n-del', allResponses, 'deleteText', newIds);
-  // Show analysis panel whenever there are responses
-  if (allResponses.length > 0) {
-    document.getElementById('analysis-panel').style.display = '';
-  }
+  if (allResponses.length > 0) document.getElementById('analysis-panel').style.display = '';
   renderList('list-kp',  'n-kp',  allResponses, 'keepText', newIds);
   renderList('list-cr',  'n-cr',  allResponses, 'createText', newIds);
 
@@ -1087,163 +1084,118 @@ function render(showFlash) {
   renderActivity();
 }
 
-// ── MOD OVERRIDES ── (deleted/grouped per field, not persisted to server)
+// ── MOD STATE ──
 const modDeleted = { deleteText: new Set(), keepText: new Set(), createText: new Set() };
 const modGroups  = { deleteText: [], keepText: [], createText: [] };
-let selectMode = null; // { field, listId, selected: Set }
+let selectMode = null;
 
 function deleteResponse(participantId, field, listId) {
   modDeleted[field].add(participantId);
   refreshList(listId, field);
 }
-
 function startGroupSelect(field, listId) {
   selectMode = { field, listId, selected: new Set() };
   refreshList(listId, field);
 }
-
 function toggleSelect(participantId, field) {
   if (!selectMode || selectMode.field !== field) return;
   if (selectMode.selected.has(participantId)) selectMode.selected.delete(participantId);
   else selectMode.selected.add(participantId);
   refreshList(selectMode.listId, field);
 }
-
 function confirmGroup(field, listId) {
-  if (!selectMode || selectMode.selected.size < 2) {
-    showToast('Seleccioná al menos 2 respuestas para agrupar'); return;
-  }
-  const grouped = allResponses.filter(r =>
-    selectMode.selected.has(r.participantId) && r[field] && r[field].trim()
-  );
-  const combinedText = grouped.map(r => r[field].trim()).join(' / ');
+  if (!selectMode || selectMode.selected.size < 2) { showToast('Seleccioná al menos 2'); return; }
+  const grouped = allResponses.filter(r => selectMode.selected.has(r.participantId) && r[field]);
+  const text = grouped.map(r => r[field].trim()).join(' / ');
   const names = grouped.map(r => r.name).join(', ');
-  const groupId = 'g_' + Date.now();
-  modGroups[field].push({ id: groupId, text: combinedText, names, participantIds: [...selectMode.selected] });
+  const id = 'g_' + Date.now();
+  modGroups[field].push({ id, text, names, participantIds: [...selectMode.selected] });
   grouped.forEach(r => modDeleted[field].add(r.participantId));
   selectMode = null;
   refreshList(listId, field);
-  showToast('✅ Respuestas agrupadas');
+  showToast('✅ Agrupadas');
 }
-
 function cancelSelect() {
   selectMode = null;
-  ['deleteText','keepText','createText'].forEach((f,i) => {
-    const ids = ['list-del','list-kp','list-cr'];
-    refreshList(ids[i], f);
-  });
+  [['list-del','deleteText'],['list-kp','keepText'],['list-cr','createText']].forEach(([l,f]) => refreshList(l,f));
 }
-
-function ungroup(groupId, field, listId) {
-  const idx = modGroups[field].findIndex(g => g.id === groupId);
+function ungroup(gid, field, listId) {
+  const idx = modGroups[field].findIndex(g => g.id === gid);
   if (idx < 0) return;
-  const g = modGroups[field][idx];
-  g.participantIds.forEach(id => modDeleted[field].delete(id));
+  modGroups[field][idx].participantIds.forEach(id => modDeleted[field].delete(id));
   modGroups[field].splice(idx, 1);
   refreshList(listId, field);
 }
-
-function updateGroupText(groupId, field, val) {
-  const g = modGroups[field].find(g => g.id === groupId);
+function updateGroupText(gid, field, val) {
+  const g = modGroups[field].find(g => g.id === gid);
   if (g) g.text = val;
 }
-
 function refreshList(listId, field) {
-  const newIds = new Set();
-  renderList(listId, field === 'deleteText' ? 'n-del' : field === 'keepText' ? 'n-kp' : 'n-cr', allResponses, field, newIds);
+  const cntId = listId === 'list-del' ? 'n-del' : listId === 'list-kp' ? 'n-kp' : 'n-cr';
+  renderList(listId, cntId, allResponses, field, new Set());
 }
-
-// Build responses for AI (respects mod deletions and groups)
 function getModdedResponses() {
   const fields = ['deleteText','keepText','createText'];
-  return allResponses
-    .filter(r => !fields.every(f => modDeleted[f].has(r.participantId)))
-    .map(r => {
-      const out = { ...r };
-      fields.forEach(f => { if (modDeleted[f].has(r.participantId)) out[f] = ''; });
-      return out;
-    })
-    .concat(
-      ['deleteText','keepText','createText'].flatMap((f, fi) =>
-        modGroups[f].map(g => ({
-          participantId: g.id,
-          name: '(Grupo: ' + g.names + ')',
-          [f]: g.text,
-          submittedAt: new Date().toISOString(),
-          version: 1
-        }))
-      )
-    );
+  const base = allResponses.map(r => {
+    const out = { ...r };
+    fields.forEach(f => { if (modDeleted[f].has(r.participantId)) out[f] = ''; });
+    return out;
+  });
+  const grouped = fields.flatMap((f) =>
+    modGroups[f].map(g => ({ participantId: g.id, name: '(Grupo: ' + g.names + ')', [f]: g.text, submittedAt: new Date().toISOString(), version: 1 }))
+  );
+  return [...base, ...grouped];
 }
 
 function renderList(listId, countId, responses, field, newIds) {
   const list = document.getElementById(listId);
   const count = document.getElementById(countId);
-  const inSelectMode = selectMode && selectMode.field === field;
+  const inSelect = selectMode && selectMode.field === field;
   const items = responses
     .filter(r => r[field] && r[field].trim() && !modDeleted[field].has(r.participantId))
     .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-
-  const totalVisible = items.length + modGroups[field].length;
-  count.textContent = totalVisible;
-
-  if (!totalVisible && !inSelectMode) {
+  const total = items.length + modGroups[field].length;
+  count.textContent = total;
+  if (!total && !inSelect) {
     list.innerHTML = `<div class="empty"><div class="empty-icon">○</div>Sin respuestas aún</div>`;
     return;
   }
-
   let html = '';
-
-  // Select mode bar
-  if (inSelectMode) {
+  if (inSelect) {
     html += `<div class="select-mode-bar">
-      <span>Seleccioná las respuestas a agrupar (${selectMode.selected.size} seleccionadas)</span>
+      <span>Seleccioná las que querés agrupar (${selectMode.selected.size} sel.)</span>
       <div style="display:flex;gap:6px">
         <button onclick="confirmGroup('${field}','${listId}')">✓ Agrupar</button>
         <button onclick="cancelSelect()">✕ Cancelar</button>
       </div>
     </div>`;
   }
-
-  // Grouped cards
   modGroups[field].forEach(g => {
     html += `<div class="grouped-card">
       <div class="grouped-card-head">
         <div class="grouped-tag">⊕ Agrupado</div>
-        <div class="grouped-actions">
-          <button class="btn-ungroup" onclick="ungroup('${g.id}','${field}','${listId}')">Desagrupar</button>
-        </div>
+        <button class="btn-ungroup" onclick="ungroup('${g.id}','${field}','${listId}')">Desagrupar</button>
       </div>
-      <div class="grouped-label">Texto agrupado (editable):</div>
       <textarea class="grouped-text" onchange="updateGroupText('${g.id}','${field}',this.value)">${escapeHtml(g.text)}</textarea>
       <div class="grouped-names">👥 ${escapeHtml(g.names)}</div>
     </div>`;
   });
-
-  // Individual cards
   html += items.map(r => {
     const flash = newIds.has(r.participantId + ':' + r.version) ? ' recent' : '';
     const edited = r.version > 1 ? '<span class="edit-tag">editado</span>' : '';
-    const isSelected = inSelectMode && selectMode.selected.has(r.participantId);
-    return `
-      <div class="response${flash}${isSelected ? ' selecting' : ''}"
-           onclick="${inSelectMode ? `toggleSelect('${r.participantId}','${field}')` : ''}">
-        <div class="response-head">
-          <span class="response-name">${escapeHtml(r.name)}</span>
-          <div class="response-meta">
-            <span class="response-time">${timeAgo(r.submittedAt)}</span>
-            ${edited}
-          </div>
-        </div>
-        <div class="response-text">${escapeHtml(r[field])}</div>
-        ${!inSelectMode ? `<div class="mod-actions">
-          <button class="mod-btn mod-btn-grp" title="Agrupar con otra" onclick="event.stopPropagation();startGroupSelect('${field}','${listId}')">⊕</button>
-          <button class="mod-btn mod-btn-del" title="Eliminar esta respuesta" onclick="event.stopPropagation();deleteResponse('${r.participantId}','${field}','${listId}')">🗑</button>
-        </div>` : ''}
+    const sel = inSelect && selectMode.selected.has(r.participantId);
+    return `<div class="response${flash}${sel ? ' selecting' : ''}" onclick="${inSelect ? `toggleSelect('${r.participantId}','${field}')` : ''}">
+      <div class="response-head">
+        <span class="response-name">${escapeHtml(r.name)}</span>
+        <div class="response-meta"><span class="response-time">${timeAgo(r.submittedAt)}</span>${edited}</div>
       </div>
-    `;
+      <div class="response-text">${escapeHtml(r[field])}</div>
+      ${!inSelect ? `<div class="mod-actions">
+        <button class="mod-btn mod-btn-grp" title="Agrupar" onclick="event.stopPropagation();startGroupSelect('${field}','${listId}')">⊕</button>
+        <button class="mod-btn mod-btn-del" title="Eliminar" onclick="event.stopPropagation();deleteResponse('${r.participantId}','${field}','${listId}')">🗑</button>
+      </div>` : ''}
+    </div>`;
   }).join('');
-
   list.innerHTML = html;
 }
 
@@ -1484,7 +1436,6 @@ async function runAnalysis() {
   const btn = document.querySelector('#analysis-actions .btn-analyze');
   if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Analizando...'; }
   showAnalysisContent('analyzing');
-  document.getElementById('analysis-panel').style.display = '';
   try {
     const res = await fetch(ANALYZE_API, {
       method: 'POST',
@@ -1497,44 +1448,62 @@ async function runAnalysis() {
       showAnalysisContent('preview');
       showToast('✅ Análisis generado');
     } else {
-      showToast('❌ Error: ' + (data.error || 'desconocido'));
+      showToast('❌ ' + (data.error || 'Error'));
       showAnalysisContent('empty');
     }
   } catch(e) {
     showToast('❌ Error de conexión');
     showAnalysisContent('empty');
   }
-  const btnAfter = document.querySelector('#analysis-actions .btn-analyze');
-  if (btnAfter) { btnAfter.disabled = false; btnAfter.innerHTML = '✨ Re-analizar'; }
+  const btn2 = document.querySelector('#analysis-actions .btn-analyze');
+  if (btn2) { btn2.disabled = false; btn2.innerHTML = '✨ Re-analizar'; }
 }
 
-async function publishAnalysis() {
-  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'publish' }) });
-  document.getElementById('published-badge').style.display = '';
+async function publishBoard() {
+  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'publish', target: 'board' }) });
+  document.getElementById('badge-board').style.display = '';
   showToast('📺 Publicado en el board');
-  updateAnalysisActions(true);
+  updateAnalysisActions();
 }
-
-async function unpublishAnalysis() {
-  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'unpublish' }) });
-  document.getElementById('published-badge').style.display = 'none';
+async function unpublishBoard() {
+  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'unpublish', target: 'board' }) });
+  document.getElementById('badge-board').style.display = 'none';
   showToast('↩ Quitado del board');
-  updateAnalysisActions(false);
+  updateAnalysisActions();
+}
+async function publishUsers() {
+  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'publish', target: 'users' }) });
+  document.getElementById('badge-users').style.display = '';
+  showToast('📱 Enviado a participantes');
+  updateAnalysisActions();
+}
+async function unpublishUsers() {
+  await fetch(ANALYZE_API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'unpublish', target: 'users' }) });
+  document.getElementById('badge-users').style.display = 'none';
+  showToast('↩ Quitado de participantes');
+  updateAnalysisActions();
 }
 
-function updateAnalysisActions(published) {
-  const actions = document.getElementById('analysis-actions');
-  actions.innerHTML = published
-    ? `<button class="btn-analyze" onclick="runAnalysis()">✨ Re-analizar</button>
-       <button class="btn-publish" onclick="unpublishAnalysis()" style="background:#888">↩ Quitar del board</button>
-       <button class="btn-email-mod" onclick="promptEmailMod()">📧 Enviar a mi mail</button>`
-    : `<button class="btn-analyze" onclick="runAnalysis()">✨ Re-analizar</button>
-       <button class="btn-publish" onclick="publishAnalysis()">📺 Publicar en board</button>
-       <button class="btn-email-mod" onclick="promptEmailMod()">📧 Enviar a mi mail</button>`;
+function updateAnalysisActions() {
+  if (!currentAnalysis) return;
+  const onBoard = currentAnalysis.published;
+  const onUsers = currentAnalysis.publishedUsers;
+  document.getElementById('badge-board').style.display = onBoard ? '' : 'none';
+  document.getElementById('badge-users').style.display = onUsers ? '' : 'none';
+  document.getElementById('analysis-actions').innerHTML = `
+    <button class="btn-analyze" onclick="runAnalysis()">✨ Re-analizar</button>
+    ${onBoard
+      ? `<button class="btn-publish" onclick="unpublishBoard()" style="background:#888">↩ Quitar del board</button>`
+      : `<button class="btn-publish" onclick="publishBoard()">📺 Publicar en board</button>`}
+    ${onUsers
+      ? `<button class="btn-publish-users" onclick="unpublishUsers()" style="background:#888">↩ Quitar de participantes</button>`
+      : `<button class="btn-publish-users" onclick="publishUsers()">📱 Enviar a participantes</button>`}
+    <button class="btn-email-mod" onclick="promptEmailMod()">📧 Mi mail</button>
+  `;
 }
 
 async function promptEmailMod() {
-  const email = prompt('¿A qué mail enviamos el análisis completo?');
+  const email = prompt('¿A qué mail enviamos el análisis?');
   if (!email || !email.includes('@')) return;
   try {
     const res = await fetch(EMAIL_API, {
@@ -1543,15 +1512,13 @@ async function promptEmailMod() {
       body: JSON.stringify({ to: email, type: 'moderator', analysis: currentAnalysis })
     });
     const data = await res.json();
-    showToast(data.ok ? '📧 Mail enviado!' : '❌ Error: ' + data.error);
-  } catch(e) { showToast('❌ Error al enviar mail'); }
+    showToast(data.ok ? '📧 Mail enviado!' : '❌ ' + data.error);
+  } catch(e) { showToast('❌ Error al enviar'); }
 }
 
 function showAnalysisContent(state) {
-  const panel = document.getElementById('analysis-panel');
+  document.getElementById('analysis-panel').style.display = '';
   const content = document.getElementById('analysis-content');
-  panel.style.display = '';
-
   if (state === 'analyzing') {
     content.innerHTML = `<div class="analysis-analyzing">
       <div class="analyzing-spinner"></div>
@@ -1566,59 +1533,52 @@ function showAnalysisContent(state) {
       '<button class="btn-analyze" onclick="runAnalysis()">✨ Analizar respuestas</button>';
     return;
   }
-
   const d = currentAnalysis.data;
-  const published = currentAnalysis.published;
-  if (published) document.getElementById('published-badge').style.display = '';
-  updateAnalysisActions(published);
-
+  updateAnalysisActions();
   content.innerHTML = `
     <div class="analysis-preview">
-      <div class="analysis-headline">${d.headline || ''}</div>
-      <div class="analysis-subheadline">${d.subheadline || ''}</div>
+      <div class="analysis-headline">${d.headline||''}</div>
+      <div class="analysis-subheadline">${d.subheadline||''}</div>
     </div>
     <div class="analysis-sections">
       <div class="analysis-section">
         <div class="analysis-section-title">⚡ Tensiones</div>
-        ${(d.tensiones||[]).map(t => `<div class="analysis-item">
+        ${(d.tensiones||[]).map(t=>`<div class="analysis-item">
           <div class="analysis-item-title">${t.titulo}</div>
           <div class="analysis-item-desc">${t.descripcion}</div>
-          ${t.historico ? `<div class="analysis-item-meta">📋 ${t.historico}</div>` : ''}
+          ${t.historico?`<div class="analysis-item-meta">📋 ${t.historico}</div>`:''}
         </div>`).join('')}
       </div>
       <div class="analysis-section">
         <div class="analysis-section-title">✅ Consensos</div>
-        ${(d.consensos||[]).map(c => `<div class="analysis-item">
+        ${(d.consensos||[]).map(c=>`<div class="analysis-item">
           <div class="analysis-item-title">${c.titulo}</div>
           <div class="analysis-item-desc">${c.descripcion}</div>
-          ${c.historico ? `<div class="analysis-item-meta">📋 ${c.historico}</div>` : ''}
+          ${c.historico?`<div class="analysis-item-meta">📋 ${c.historico}</div>`:''}
         </div>`).join('')}
       </div>
       <div class="analysis-section">
         <div class="analysis-section-title">🚀 Ideas radicales</div>
-        ${(d.ideas_radicales||[]).map(i => `<div class="analysis-item">
-          <div class="analysis-item-title">${i.titulo}
-            <span class="fact-badge fact-${i.factibilidad}">${i.factibilidad}</span>
-          </div>
+        ${(d.ideas_radicales||[]).map(i=>`<div class="analysis-item">
+          <div class="analysis-item-title">${i.titulo}<span class="fact-badge fact-${i.factibilidad}">${i.factibilidad}</span></div>
           <div class="analysis-item-desc">${i.descripcion}</div>
           <div class="analysis-item-meta">💡 ${i.razon}</div>
         </div>`).join('')}
       </div>
       <div class="analysis-section">
         <div class="analysis-section-title">🎯 Oportunidades</div>
-        ${(d.oportunidades||[]).map(o => `<div class="analysis-item">
+        ${(d.oportunidades||[]).map(o=>`<div class="analysis-item">
           <div class="analysis-item-title">${o.titulo}</div>
           <div class="analysis-item-desc">${o.descripcion}</div>
         </div>`).join('')}
       </div>
     </div>
-    <div class="analysis-section analysis-section-full" style="margin-top:12px;background:var(--canvas);border-radius:10px;padding:14px 16px;">
+    <div class="analysis-section" style="margin-top:12px;background:var(--canvas);border-radius:10px;padding:14px 16px;">
       <div class="analysis-section-title">→ Próximos pasos</div>
       <div class="analysis-steps">
-        ${(d.proximos_pasos||[]).map((p,i) => `<div class="analysis-step">
+        ${(d.proximos_pasos||[]).map((p,i)=>`<div class="analysis-step">
           <div class="step-num">${i+1}</div>
-          <div><div class="step-text">${p.accion}</div>
-          <div class="step-meta">${p.responsable} · ${p.plazo}</div></div>
+          <div><div class="step-text">${p.accion}</div><div class="step-meta">${p.responsable} · ${p.plazo}</div></div>
         </div>`).join('')}
       </div>
     </div>
